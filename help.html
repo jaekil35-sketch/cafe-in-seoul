@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>도움말 — 카페인 서울</title>
+  <meta name="description" content="카페인 서울 이용 방법, 기능 설명, 자주 묻는 질문, 카페 탐방 팁을 안내합니다." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cafe-in-seoul.vercel.app/help" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    .help-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #8B5E3C 100%);
+      color: #fff;
+      text-align: center;
+      padding: 80px 24px 60px;
+    }
+    .help-hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; }
+    .help-hero p { font-size: 1.05rem; opacity: .85; }
+
+    .help-wrap { max-width: 900px; margin: 0 auto; padding: 64px 24px; }
+
+    .help-section { margin-bottom: 64px; }
+    .help-section h2 {
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--primary); margin-bottom: 24px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    /* 기능 카드 */
+    .feature-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+    @media(max-width:600px){ .feature-grid { grid-template-columns: 1fr; } }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+    .feature-icon { font-size: 2rem; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
+    .feature-card p { font-size: .9rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* 사용방법 스텝 */
+    .step-list { display: flex; flex-direction: column; gap: 20px; }
+    .step-item { display: flex; gap: 20px; align-items: flex-start; }
+    .step-num {
+      min-width: 40px; height: 40px;
+      background: var(--primary); color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem; flex-shrink: 0;
+    }
+    .step-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+    .step-content p { font-size: .9rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* FAQ */
+    .faq-list { display: flex; flex-direction: column; gap: 12px; }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .faq-q {
+      width: 100%; text-align: left; background: var(--surface);
+      padding: 18px 20px; font-size: .95rem; font-weight: 700;
+      color: var(--text-main); cursor: pointer; border: none;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .faq-q:hover { background: var(--bg); }
+    .faq-q .arrow { transition: transform .25s; font-size: .85rem; color: var(--text-muted); }
+    .faq-q.open .arrow { transform: rotate(180deg); }
+    .faq-a {
+      display: none; padding: 0 20px 18px;
+      font-size: .9rem; color: var(--text-muted); line-height: 1.7;
+      background: var(--surface);
+    }
+    .faq-a.open { display: block; }
+
+    /* 팁 */
+    .tip-list { display: flex; flex-direction: column; gap: 16px; }
+    .tip-item {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 20px;
+    }
+    .tip-emoji { font-size: 1.5rem; flex-shrink: 0; }
+    .tip-content h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+    .tip-content p { font-size: .88rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* 탭 */
+    .help-tabs { display: flex; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
+    .help-tab {
+      padding: 10px 20px; border-radius: 999px;
+      border: 1.5px solid var(--border); background: var(--surface);
+      font-size: .9rem; font-weight: 600; cursor: pointer; color: var(--text-muted);
+      text-decoration: none;
+    }
+    .help-tab:hover, .help-tab.active {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+<!-- GNB -->
+<header class="gnb">
+  <div class="gnb-inner">
+    <a href="index.html" class="gnb-logo">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="13" fill="#6B4226"/>
+        <path d="M8 10 Q10 8 12 10 Q14 12 16 10 Q18 8 20 10" stroke="#F5E6D3" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M8 18 Q14 20 20 18 Q20 22 14 23 Q8 22 8 18Z" fill="#F5E6D3"/>
+        <rect x="11" y="10" width="6" height="8" rx="1" fill="#F5E6D3" opacity=".3"/>
+      </svg>
+      카페인 서울
+    </a>
+    <nav class="gnb-nav">
+      <a href="index.html">홈</a>
+      <a href="region.html">지역별</a>
+      <a href="map.html">지도보기</a>
+      <a href="community.html">커뮤니티</a>
+      <a href="help.html" class="active">도움말</a>
+    </nav>
+  </div>
+</header>
+
+<!-- 히어로 -->
+<div class="help-hero">
+  <h1>☕ 도움말 센터</h1>
+  <p>카페인 서울 이용 방법부터 카페 탐방 꿀팁까지 모두 안내해 드려요.</p>
+</div>
+
+<!-- 탭 네비게이션 -->
+<div class="help-wrap" style="padding-bottom:0;">
+  <div class="help-tabs">
+    <a href="#features" class="help-tab active">기능 소개</a>
+    <a href="#howto" class="help-tab">사용 방법</a>
+    <a href="#faq" class="help-tab">자주 묻는 질문</a>
+    <a href="#tips" class="help-tab">카페 탐방 팁</a>
+  </div>
+</div>
+
+<div class="help-wrap">
+
+  <!-- 기능 소개 -->
+  <section class="help-section" id="features">
+    <h2>✨ 주요 기능 소개</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3>인터랙티브 지도</h3>
+        <p>서울 전체 카페를 지도 위에서 한눈에 확인하세요. 마커를 클릭하면 카페 정보가 바로 나옵니다.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📍</div>
+        <h3>지역별 탐색</h3>
+        <p>성수동, 홍대, 연남동 등 15개 동네별로 카페를 모아봤어요. 탭 하나로 원하는 지역 카페만 확인하세요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>스마트 필터</h3>
+        <p>주차 가능, 반려동물 동반, 와이파이, 콘센트 여부로 필터링해 딱 맞는 카페를 찾을 수 있어요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">☕</div>
+        <h3>카페 상세 정보</h3>
+        <p>영업시간, 메뉴 및 가격, 인스타그램 계정, 카카오맵·네이버지도 바로가기를 제공합니다.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏷️</div>
+        <h3>테마 태그</h3>
+        <p>#작업하기좋은 #데이트코스 #인스타감성 #스페셜티 등 테마별로 카페를 탐색할 수 있어요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>커뮤니티</h3>
+        <p>다른 카페 탐방러들과 카페 정보를 공유하고 후기를 나눌 수 있는 공간입니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 사용 방법 -->
+  <section class="help-section" id="howto">
+    <h2>📖 이렇게 사용하세요</h2>
+    <div class="step-list">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h3>원하는 지역 선택</h3>
+          <p>상단 메뉴의 <strong>지역별</strong>을 클릭하면 15개 동네 탭이 나와요. 원하는 동네를 탭 하면 해당 지역 카페만 모아볼 수 있어요.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h3>필터로 좁히기</h3>
+          <p>주차, 반려동물, 와이파이, 콘센트 필터를 체크하면 조건에 맞는 카페만 남아요. 여러 개 동시에 선택도 가능합니다.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h3>카페 카드 클릭</h3>
+          <p>마음에 드는 카페 카드를 클릭하면 상세 페이지로 이동해요. 메뉴 가격, 영업시간, 휴무일, 인스타그램 정보를 확인할 수 있어요.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h3>지도에서 위치 확인</h3>
+          <p>카페 상세 페이지의 지도에서 정확한 위치를 확인하고, 🟡 카카오맵 또는 🟢 네이버지도 버튼으로 길찾기를 시작하세요.</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>더보기로 더 많은 카페</h3>
+          <p>지역별 페이지에서 처음에는 9개가 보이고, 하단 <strong>더보기</strong> 버튼을 누르면 9개씩 추가로 불러와요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="help-section" id="faq">
+    <h2>❓ 자주 묻는 질문</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          카페 정보는 얼마나 자주 업데이트되나요?
+          <span class="arrow">▼</span>
+        </button>
+        <div class="faq-a">카페인 서울은 정기적으로 영업시간, 메뉴, 휴무일 등을 업데이트하고 있어요. 단, 실제 방문 전에 카카오맵이나 인스타그램에서 최신 정보를 한번 더 확인하시길 권장합니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          카페를 등록하거나 정보 수정을 요청할 수 있나요?
+          <span class="arrow">▼</span>
+        </button>
+        <div class="faq-a">네! 문의 페이지를 통해 카페 등록 요청 및 정보 수정 요청을 보내주세요. 검토 후 빠르게 반영해 드립니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          필터를 여러 개 동시에 사용할 수 있나요?
+          <span class="arrow">▼</span>
+        </button>
+        <div class="faq-a">네, 가능합니다. 예를 들어 주차 가능 + 반려동물 동반 + 와이파이를 동시에 선택하면 세 가지 조건을 모두 만족하는 카페만 필터링됩니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          지도에서 내 위치 주변 카페를 찾을 수 있나요?
+          <span class="arrow">▼</span>
+        </button>
+        <div class="faq-a">지도 페이지에서 브라우저 위치 정보 허용 시 현재 위치를 기준으로 주변 카페를 확인할 수 있어요. 브라우저에서 위치 접근을 허용해 주세요.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          모바일에서도 잘 되나요?
+          <span class="arrow">▼</span>
+        </button>
+        <div class="faq-a">카페인 서울은 모바일 환경에 최적화되어 있어요. 스마트폰으로 접속하면 PC와 동일하게 모든 기능을 이용하실 수 있습니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          즐겨찾기 저장 기능이 있나요?
+          <span class="arrow">▼</span>
+        </button>
+        <div class="faq-a">카페 상세 페이지의 🤍 저장하기 버튼으로 마음에 드는 카페를 저장할 수 있어요. 현재는 브라우저 세션 동안 유지되며, 회원 기능 추가 시 영구 저장이 가능해질 예정입니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          서울 외 다른 지역 카페도 추가될 예정인가요?
+          <span class="arrow">▼</span>
+        </button>
+        <div class="faq-a">현재는 서울 15개 주요 지역을 서비스하고 있어요. 추후 경기도, 부산, 제주 등으로 확장할 계획입니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 카페 탐방 팁 -->
+  <section class="help-section" id="tips">
+    <h2>💡 카페 탐방 꿀팁</h2>
+    <div class="tip-list">
+      <div class="tip-item">
+        <div class="tip-emoji">⏰</div>
+        <div class="tip-content">
+          <h3>평일 오전이 황금 타임</h3>
+          <p>인기 카페는 주말 오후에 웨이팅이 생길 수 있어요. 여유롭게 즐기려면 평일 오전 10~12시를 노려보세요. 특히 성수동, 연남동 카페들은 평일 오전이 훨씬 한산합니다.</p>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">📸</div>
+        <div class="tip-content">
+          <h3>인스타 감성 카페는 자연광이 핵심</h3>
+          <p>사진 맛집으로 소문난 카페는 창가 자리가 핵심이에요. 오전 10~12시 사이 자연광이 가장 예쁘게 들어옵니다. 방문 전 인스타그램에서 카페 계정을 미리 팔로우해 자리 정보를 확인해 보세요.</p>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">🐶</div>
+        <div class="tip-content">
+          <h3>반려동물 동반 시 꼭 확인하세요</h3>
+          <p>반려동물 동반 가능 표시가 있어도 실내/외 여부가 다를 수 있어요. 방문 전 카페 인스타그램이나 전화로 실내 입장 가능 여부를 확인하는 게 좋아요.</p>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">💻</div>
+        <div class="tip-content">
+          <h3>작업 카페 선택 요령</h3>
+          <p>카페에서 오래 작업할 계획이라면 콘센트 + 와이파이 두 가지 필터를 동시에 체크하세요. 주말엔 혼잡할 수 있으니 평일 이용을 추천드려요. 을지로, 강남 테헤란로 카페들이 작업 환경이 좋기로 유명합니다.</p>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">🧭</div>
+        <div class="tip-content">
+          <h3>카페 투어 루트 추천</h3>
+          <p>한 동네에서 여러 카페를 투어할 때는 지도 페이지를 활용해 동선을 미리 짜보세요. 성수동 → 서울숲, 연남동 → 홍대, 북촌 → 서촌 코스처럼 인근 동네를 함께 묶으면 알차게 즐길 수 있어요.</p>
+        </div>
+      </div>
+      <div class="tip-item">
+        <div class="tip-emoji">🌙</div>
+        <div class="tip-content">
+          <h3>야경 카페는 1시간 전 도착</h3>
+          <p>을지로 옥상, 이태원 루프탑, 잠실 롯데뷰 등 야경 카페는 일몰 1시간 전에 도착해 자리를 잡는 것이 핵심이에요. 해가 지는 순간부터 야경으로 변하는 시간대가 가장 아름답습니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 문의 안내 -->
+  <section style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:40px; text-align:center; margin-bottom:40px;">
+    <div style="font-size:2rem; margin-bottom:12px;">💌</div>
+    <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:10px;">더 궁금한 게 있으신가요?</h2>
+    <p style="color:var(--text-muted); margin-bottom:24px; font-size:.95rem;">문의 페이지를 통해 언제든 질문해 주세요. 빠르게 답변드릴게요.</p>
+    <a href="contact.html" style="display:inline-block; background:var(--primary); color:#fff; padding:12px 32px; border-radius:999px; font-weight:700; text-decoration:none;">문의하기</a>
+  </section>
+
+</div>
+
+<!-- 푸터 -->
+<footer style="background:var(--primary); color:#F5E6D3; text-align:center; padding:40px 24px;">
+  <div style="font-weight:900; font-size:1.1rem; margin-bottom:12px;">☕ 카페인 서울</div>
+  <div style="font-size:.85rem; opacity:.7; margin-bottom:16px;">서울 카페 탐방의 시작</div>
+  <div style="display:flex; justify-content:center; gap:24px; font-size:.85rem; flex-wrap:wrap;">
+    <a href="about.html" style="color:#F5E6D3; text-decoration:none; opacity:.8;">사이트 소개</a>
+    <a href="privacy.html" style="color:#F5E6D3; text-decoration:none; opacity:.8;">개인정보처리방침</a>
+    <a href="contact.html" style="color:#F5E6D3; text-decoration:none; opacity:.8;">문의하기</a>
+    <a href="help.html" style="color:#F5E6D3; text-decoration:none; opacity:.8;">도움말</a>
+  </div>
+  <div style="margin-top:20px; font-size:.8rem; opacity:.5;">© 2026 카페인 서울. All rights reserved.</div>
+</footer>
+
+<script>
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  document.querySelectorAll('.faq-a.open').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-q.open').forEach(b => b.classList.remove('open'));
+  if (!isOpen) {
+    answer.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+</script>
+</body>
+</html>

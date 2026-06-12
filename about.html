@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사이트 소개 — 카페인 서울</title>
+  <meta name="description" content="카페인 서울은 서울 15개 지역 226개 카페 정보를 제공하는 카페 탐색 플랫폼입니다. AI와 함께 만든 서울 카페 가이드." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://cafe-in-seoul.vercel.app/about" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    .about-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #8B5E3C 100%);
+      color: #fff; text-align: center; padding: 80px 24px 60px;
+    }
+    .about-hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; }
+    .about-hero p { font-size: 1.05rem; opacity: .85; max-width: 540px; margin: 0 auto; line-height: 1.7; }
+    .about-wrap { max-width: 860px; margin: 0 auto; padding: 64px 24px; }
+    .about-section { margin-bottom: 60px; }
+    .about-section h2 {
+      font-size: 1.4rem; font-weight: 800; color: var(--primary);
+      margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--primary);
+    }
+    .about-section p { font-size: .95rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 14px; }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin: 32px 0; }
+    @media(max-width:600px){ .stat-grid { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 28px 20px; text-align: center;
+    }
+    .stat-num { font-size: 2.2rem; font-weight: 900; color: var(--primary); }
+    .stat-label { font-size: .88rem; color: var(--text-muted); margin-top: 6px; }
+
+    .value-list { display: flex; flex-direction: column; gap: 16px; }
+    .value-item {
+      display: flex; gap: 16px; align-items: flex-start;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 20px;
+    }
+    .value-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .value-item h3 { font-size: .95rem; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+    .value-item p { font-size: .88rem; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+    .made-with {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 36px; text-align: center;
+    }
+    .made-with h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; }
+    .made-with p { font-size: .9rem; color: var(--text-muted); line-height: 1.8; margin: 0; }
+    .badge-list { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+    .badge {
+      padding: 6px 14px; border-radius: 999px;
+      background: var(--primary); color: #fff; font-size: .82rem; font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<header class="gnb">
+  <div class="gnb-inner">
+    <a href="index.html" class="gnb-logo">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="13" fill="#6B4226"/>
+        <path d="M8 10 Q10 8 12 10 Q14 12 16 10 Q18 8 20 10" stroke="#F5E6D3" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M8 18 Q14 20 20 18 Q20 22 14 23 Q8 22 8 18Z" fill="#F5E6D3"/>
+        <rect x="11" y="10" width="6" height="8" rx="1" fill="#F5E6D3" opacity=".3"/>
+      </svg>
+      카페인 서울
+    </a>
+    <nav class="gnb-nav">
+      <a href="index.html">홈</a>
+      <a href="region.html">지역별</a>
+      <a href="map.html">지도보기</a>
+      <a href="community.html">커뮤니티</a>
+      <a href="help.html">도움말</a>
+    </nav>
+  </div>
+</header>
+
+<div class="about-hero">
+  <h1>☕ 카페인 서울 소개</h1>
+  <p>서울의 모든 카페를 더 쉽고 재미있게 탐색할 수 있도록<br/>만들어진 카페 소개 플랫폼입니다.</p>
+</div>
+
+<div class="about-wrap">
+
+  <section class="about-section">
+    <h2>카페인 서울이란?</h2>
+    <p>카페인 서울은 서울 15개 주요 지역의 카페 정보를 한곳에 모아 제공하는 카페 탐색 플랫폼입니다. 성수동, 홍대, 연남동, 한남동, 북촌, 서촌, 이태원, 강남, 청담동, 종로, 망원동, 합정, 잠실, 을지로, 신촌 — 서울을 대표하는 카페 거리를 모두 다룹니다.</p>
+    <p>단순한 카페 목록이 아니라, 지도 위에서 위치를 확인하고, 주차·반려동물·와이파이·콘센트 여부를 필터링하고, 카카오맵·네이버지도로 바로 길찾기까지 연결되는 통합 카페 탐색 서비스를 지향합니다.</p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num">226+</div>
+        <div class="stat-label">등록된 카페 수</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">15</div>
+        <div class="stat-label">서비스 지역</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">4가지</div>
+        <div class="stat-label">편의 필터</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>서비스 가치</h2>
+    <div class="value-list">
+      <div class="value-item">
+        <div class="value-icon">🎯</div>
+        <div>
+          <h3>정확한 정보</h3>
+          <p>영업시간, 메뉴 가격, 휴무일, 편의시설 정보를 정확하게 제공하기 위해 꾸준히 업데이트합니다. 카카오맵·네이버지도 연동으로 실시간 길찾기도 지원합니다.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🌍</div>
+        <div>
+          <h3>누구나 쉽게</h3>
+          <p>복잡한 가입 없이 누구나 바로 이용할 수 있어요. 모바일 최적화 설계로 스마트폰에서도 불편함 없이 카페를 탐색할 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">📍</div>
+        <div>
+          <h3>동네 카페 발견</h3>
+          <p>대형 프랜차이즈가 아닌, 각 동네의 개성 있는 독립 카페들을 발굴하고 소개하는 데 집중합니다. 숨어있는 로컬 카페를 함께 알려주세요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>만든 이야기</h2>
+    <div class="made-with">
+      <h3>AI와 함께 만든 카페 플랫폼</h3>
+      <p>카페인 서울은 Claude(클로드) AI와의 대화만으로 만들어진 웹 서비스입니다.<br/>코딩 지식 없이 아이디어만으로 시작해, 지도 연동·필터 기능·카페 데이터까지<br/>모두 AI와 협업하여 구현했습니다.<br/><br/>아이디어가 있다면 누구든 만들 수 있다는 걸 보여주고 싶었습니다.</p>
+      <div class="badge-list">
+        <span class="badge">Claude AI</span>
+        <span class="badge">HTML/CSS/JS</span>
+        <span class="badge">Leaflet.js</span>
+        <span class="badge">OpenStreetMap</span>
+        <span class="badge">Vercel</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>앞으로의 계획</h2>
+    <p>카페인 서울은 계속 성장합니다. 앞으로 추가될 기능들을 기대해 주세요.</p>
+    <div class="value-list">
+      <div class="value-item">
+        <div class="value-icon">🔜</div>
+        <div>
+          <h3>회원 기능 & 즐겨찾기 영구 저장</h3>
+          <p>좋아하는 카페를 저장하고 나만의 카페 리스트를 만들 수 있는 회원 기능을 준비 중입니다.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🔜</div>
+        <div>
+          <h3>리뷰 & 평점 시스템</h3>
+          <p>실제 방문자들의 생생한 리뷰와 평점을 남길 수 있는 기능을 추가할 예정입니다.</p>
+        </div>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🔜</div>
+        <div>
+          <h3>서울 전 지역 확장</h3>
+          <p>현재 15개 지역에서 서울 25개 구 전체로 확장하고, 이후 경기도·부산·제주까지 커버할 계획입니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="text-align:center; padding: 20px 0 40px;">
+    <a href="contact.html" style="display:inline-block; background:var(--primary); color:#fff; padding:14px 36px; border-radius:999px; font-weight:700; text-decoration:none; font-size:1rem;">카페 등록 & 문의하기</a>
+  </div>
+
+</div>
+
+<footer style="background:var(--primary); color:#F5E6D3; text-align:center; padding:40px 24px;">
+  <div style="font-weight:900; font-size:1.1rem; margin-bottom:12px;">☕ 카페인 서울</div>
+  <div style="font-size:.85rem; opacity:.7; margin-bottom:16px;">서울 카페 탐방의 시작</div>
+  <div style="display:flex; justify-content:center; gap:24px; font-size:.85rem; flex-wrap:wrap;">
+    <a href="about.html" style="color:#F5E6D3; text-decoration:none; opacity:.8;">사이트 소개</a>
+    <a href="privacy.html" style="color:#F5E6D3; text-decoration:none; opacity:.8;">개인정보처리방침</a>
+    <a href="contact.html" style="color:#F5E6D3; text-decoration:none; opacity:.8;">문의하기</a>
+    <a href="help.html" style="color:#F5E6D3; text-decoration:none; opacity:.8;">도움말</a>
+  </div>
+  <div style="margin-top:20px; font-size:.8rem; opacity:.5;">© 2026 카페인 서울. All rights reserved.</div>
+</footer>
+
+</body>
+</html>

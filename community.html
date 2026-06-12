@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>커뮤니티 — 카페인 서울</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    .comm-hero {
+      background: linear-gradient(135deg, #1A1209 0%, #3A2010 50%, #6B4226 100%);
+      padding: 56px 24px 48px; text-align: center; color: #fff;
+      position: relative; overflow: hidden;
+    }
+    .comm-hero::after {
+      content: '☕'; font-size: 180px; opacity: .05;
+      position: absolute; right: -20px; top: -30px; line-height: 1;
+    }
+    .comm-hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; }
+    .comm-hero p  { opacity: .75; font-size: 1rem; }
+    .comm-stats {
+      display: flex; justify-content: center; gap: 40px; margin-top: 28px;
+    }
+    .comm-stat { text-align: center; }
+    .comm-stat-num { font-size: 1.6rem; font-weight: 900; color: var(--accent); }
+    .comm-stat-label { font-size: .8rem; opacity: .65; margin-top: 2px; }
+
+    /* ─── 전체 레이아웃 ─── */
+    .comm-layout {
+      max-width: 1200px; margin: 0 auto; padding: 40px 24px;
+      display: grid; grid-template-columns: 1fr 320px; gap: 32px;
+      align-items: start;
+    }
+
+    /* ─── 탭 ─── */
+    .comm-tabs {
+      display: flex; gap: 4px; margin-bottom: 24px;
+      border-bottom: 2px solid var(--border); padding-bottom: 0;
+    }
+    .comm-tab {
+      padding: 10px 20px; font-size: .92rem; font-weight: 700;
+      color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: all .2s;
+    }
+    .comm-tab:hover { color: var(--primary); }
+    .comm-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* ─── 글쓰기 박스 ─── */
+    .write-box {
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); padding: 20px;
+      margin-bottom: 24px; display: flex; gap: 14px; align-items: flex-start;
+    }
+    .write-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem; flex-shrink: 0;
+    }
+    .write-input {
+      flex: 1; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      font-size: .92rem; outline: none; resize: none;
+      transition: border-color .2s; height: 48px;
+      font-family: inherit; color: var(--text-main);
+    }
+    .write-input:focus { border-color: var(--primary); height: 100px; }
+    .write-input::placeholder { color: var(--text-muted); }
+    .write-actions {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 10px; flex-wrap: wrap; gap: 8px;
+    }
+    .write-icons { display: flex; gap: 6px; }
+    .write-icon-btn {
+      padding: 7px 12px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); font-size: .85rem;
+      color: var(--text-sub); cursor: pointer; transition: all .2s;
+    }
+    .write-icon-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .post-submit {
+      padding: 9px 22px; background: var(--primary); color: #fff;
+      border-radius: var(--radius-sm); font-size: .88rem; font-weight: 700;
+      transition: background .2s;
+    }
+    .post-submit:hover { background: var(--primary-light); }
+
+    /* ─── 게시물 카드 ─── */
+    .post-list { display: flex; flex-direction: column; gap: 16px; }
+    .post-card {
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); padding: 22px;
+      transition: box-shadow .2s; cursor: pointer;
+    }
+    .post-card:hover { box-shadow: var(--shadow-md); border-color: var(--accent-soft); }
+    .post-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .post-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem; color: #fff; flex-shrink: 0;
+    }
+    .post-meta-name { font-weight: 700; font-size: .95rem; }
+    .post-meta-info { font-size: .8rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .post-badge {
+      padding: 2px 8px; border-radius: 20px; font-size: .72rem; font-weight: 700;
+    }
+    .post-badge.tour  { background: #FEF3E2; color: #C87C2A; }
+    .post-badge.review { background: #E8F4FD; color: #2A7CC8; }
+    .post-badge.tip   { background: #EBF7EE; color: #2A9A4C; }
+    .post-badge.talk  { background: #F3EFFE; color: #7A4CC8; }
+    .post-title { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; }
+    .post-text  { font-size: .9rem; color: var(--text-sub); line-height: 1.7; margin-bottom: 12px; }
+    .post-imgs  { display: flex; gap: 8px; margin-bottom: 12px; }
+    .post-img   {
+      width: 100px; height: 100px; border-radius: var(--radius-sm);
+      object-fit: cover; flex-shrink: 0;
+    }
+    .post-cafe-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg-warm); border: 1px solid var(--accent-soft);
+      color: var(--primary); padding: 5px 12px; border-radius: var(--radius-sm);
+      font-size: .82rem; font-weight: 600; margin-bottom: 12px;
+    }
+    .post-footer {
+      display: flex; align-items: center; gap: 16px;
+      border-top: 1px solid var(--border); padding-top: 12px;
+    }
+    .post-action-btn {
+      display: flex; align-items: center; gap: 5px;
+      font-size: .85rem; color: var(--text-muted); cursor: pointer;
+      padding: 4px 8px; border-radius: var(--radius-sm);
+      transition: all .2s;
+    }
+    .post-action-btn:hover { background: var(--bg-warm); color: var(--primary); }
+    .post-action-btn.liked { color: #D94C3D; }
+
+    /* ─── 우측 사이드바 ─── */
+    .comm-sidebar { display: flex; flex-direction: column; gap: 20px; position: sticky; top: 80px; }
+    .side-card {
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); overflow: hidden;
+    }
+    .side-card-title {
+      padding: 14px 18px; font-weight: 800; font-size: .92rem;
+      background: var(--bg-warm); border-bottom: 1px solid var(--border);
+    }
+    .side-card-body { padding: 16px 18px; }
+    .hot-post-item {
+      display: flex; gap: 10px; padding: 9px 0;
+      border-bottom: 1px solid var(--border); cursor: pointer;
+    }
+    .hot-post-item:last-child { border-bottom: none; }
+    .hot-rank {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: .72rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .hot-rank.top { background: #E8503A; }
+    .hot-post-title {
+      font-size: .85rem; font-weight: 600; color: var(--text-main);
+      flex: 1; line-height: 1.4;
+    }
+    .hot-post-title:hover { color: var(--primary); }
+    .top-reviewer-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .top-reviewer-item:last-child { border-bottom: none; }
+    .tr-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .88rem; color: #fff; flex-shrink: 0;
+    }
+    .tr-name { font-size: .88rem; font-weight: 700; }
+    .tr-count { font-size: .78rem; color: var(--text-muted); }
+    .tr-badge { margin-left: auto; font-size: .72rem; background: var(--accent-soft); color: var(--primary); padding: 2px 8px; border-radius: 20px; font-weight: 700; }
+    .cafe-vote-item {
+      display: flex; align-items: center; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cafe-vote-item:last-child { border-bottom: none; }
+    .vote-thumb { width: 48px; height: 48px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
+    .vote-name { font-size: .88rem; font-weight: 700; margin-bottom: 3px; }
+    .vote-bar-wrap { flex: 1; }
+    .vote-bar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+    .vote-bar-fill  { height: 100%; background: var(--accent); border-radius: 3px; }
+    .vote-pct { font-size: .75rem; color: var(--text-muted); }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 6px; }
+    .cloud-tag {
+      background: var(--bg-warm); border: 1px solid var(--accent-soft);
+      color: var(--primary-light); padding: 5px 12px; border-radius: 20px;
+      font-size: .8rem; font-weight: 600; cursor: pointer; transition: all .2s;
+    }
+    .cloud-tag:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    @media(max-width:900px){
+      .comm-layout { grid-template-columns: 1fr; }
+      .comm-sidebar { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="gnb">
+  <div class="gnb-inner">
+    <a href="index.html" class="gnb-logo">
+      <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" fill="#6B4226"/><path d="M8 10 Q10 8 12 10 Q14 12 16 10 Q18 8 20 10" stroke="#F5E6D3" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M8 18 Q14 20 20 18 Q20 22 14 23 Q8 22 8 18Z" fill="#F5E6D3"/></svg>
+      카페인 서울
+    </a>
+    <nav class="gnb-nav">
+      <a href="index.html">홈</a>
+      <a href="region.html">지역별</a>
+      <a href="index.html#themeGrid">테마별</a>
+      <a href="map.html">지도보기</a>
+      <a href="community.html" class="active">커뮤니티</a>
+    </nav>
+    <div class="gnb-actions">
+      <button class="btn-ghost">회원가입</button>
+      <button class="btn-login">로그인</button>
+    </div>
+  </div>
+</header>
+
+<!-- 히어로 -->
+<div class="comm-hero">
+  <h1>☕ 카페 커뮤니티</h1>
+  <p>카페 투어 기록, 리뷰, 꿀팁을 함께 나눠요</p>
+  <div class="comm-stats">
+    <div class="comm-stat"><div class="comm-stat-num">12,847</div><div class="comm-stat-label">총 게시물</div></div>
+    <div class="comm-stat"><div class="comm-stat-num">4,231</div><div class="comm-stat-label">활성 멤버</div></div>
+    <div class="comm-stat"><div class="comm-stat-num">38,502</div><div class="comm-stat-label">작성된 리뷰</div></div>
+  </div>
+</div>
+
+<div class="comm-layout">
+
+  <!-- 메인 피드 -->
+  <div>
+    <!-- 탭 -->
+    <div class="comm-tabs">
+      <div class="comm-tab active" onclick="switchTab(this,'all')">전체</div>
+      <div class="comm-tab" onclick="switchTab(this,'tour')">☕ 카페투어</div>
+      <div class="comm-tab" onclick="switchTab(this,'review')">⭐ 리뷰</div>
+      <div class="comm-tab" onclick="switchTab(this,'tip')">💡 꿀팁</div>
+      <div class="comm-tab" onclick="switchTab(this,'talk')">💬 자유톡</div>
+    </div>
+
+    <!-- 글쓰기 -->
+    <div class="write-box">
+      <div class="write-avatar">나</div>
+      <div style="flex:1;">
+        <textarea class="write-input" id="newPostText" placeholder="카페 투어 기록, 꿀팁, 자유롭게 공유해보세요!"></textarea>
+        <div class="write-actions">
+          <div class="write-icons">
+            <button class="write-icon-btn">📷 사진</button>
+            <button class="write-icon-btn">☕ 카페 태그</button>
+            <button class="write-icon-btn">📍 위치</button>
+          </div>
+          <button class="post-submit" onclick="submitPost()">게시하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 게시물 피드 -->
+    <div class="post-list" id="postList"></div>
+
+    <button class="load-more-btn" style="margin-top:16px" onclick="loadMorePosts()">
+      더 많은 게시물 불러오기
+    </button>
+  </div>
+
+  <!-- 우측 사이드바 -->
+  <aside class="comm-sidebar">
+
+    <!-- 인기 게시물 -->
+    <div class="side-card">
+      <div class="side-card-title">🔥 지금 뜨는 글</div>
+      <div class="side-card-body" id="hotPosts"></div>
+    </div>
+
+    <!-- 인기 태그 -->
+    <div class="side-card">
+      <div class="side-card-title">🏷️ 인기 태그</div>
+      <div class="side-card-body">
+        <div class="tag-cloud">
+          <span class="cloud-tag">#성수동카페</span>
+          <span class="cloud-tag">#카공</span>
+          <span class="cloud-tag">#데이트코스</span>
+          <span class="cloud-tag">#홍대카페</span>
+          <span class="cloud-tag">#감성카페</span>
+          <span class="cloud-tag">#연남동</span>
+          <span class="cloud-tag">#한남동</span>
+          <span class="cloud-tag">#스페셜티</span>
+          <span class="cloud-tag">#디저트</span>
+          <span class="cloud-tag">#루프탑</span>
+          <span class="cloud-tag">#북촌한옥</span>
+          <span class="cloud-tag">#반려견동반</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 이번 주 베스트 리뷰어 -->
+    <div class="side-card">
+      <div class="side-card-title">👑 이번 주 베스트 리뷰어</div>
+      <div class="side-card-body" id="topReviewers"></div>
+    </div>
+
+    <!-- 이번 주 인기 카페 투표 -->
+    <div class="side-card">
+      <div class="side-card-title">🗳️ 이번 주 인기 카페</div>
+      <div class="side-card-body" id="cafeVotes"></div>
+    </div>
+
+  </aside>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-brand">☕ 카페인 서울</div><p class="footer-desc">서울 감성 카페를 함께 발견해요.</p></div>
+    <div class="footer-col"><h4>서비스</h4><a href="index.html">홈</a><a href="map.html">지도보기</a></div>
+    <div class="footer-col"><h4>커뮤니티</h4><a href="community.html">피드</a><a href="#">카페 등록</a></div>
+    <div class="footer-col"><h4>고객지원</h4><a href="#">FAQ</a><a href="#">문의하기</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 카페인 서울.</span></div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+/* ─── 게시물 데이터 ─── */
+const POSTS = [
+  {
+    id: 1, type: 'tour',
+    user: '김민지', initial: '김', color: '#E8A87C',
+    date: '2시간 전', likes: 48, comments: 12, views: 324,
+    title: '성수동 카페 투어 🗺️ 하루에 5곳 다녀왔어요',
+    text: '어제 성수동에서 카페 투어를 했는데 정말 대박이었어요! 브루클린 더 커피에서 시작해서 어니언까지... 다리는 아팠지만 너무 행복했습니다 ☕ 사진 많이 찍어왔으니 참고하세요~',
+    cafeLink: '브루클린 더 커피',
+    cafeId: 1,
+    images: [
+      'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=200&q=70',
+      'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=200&q=70',
+      'https://images.unsplash.com/photo-1498804103079-a6351b050096?w=200&q=70',
+    ],
+    liked: false,
+  },
+  {
+    id: 2, type: 'tip',
+    user: '프리랜서박', initial: '박', color: '#7C9EE8',
+    date: '5시간 전', likes: 87, comments: 23, views: 891,
+    title: '💡 서울 카공 카페 꿀팁 모음 (노트북 작업러 필독)',
+    text: '카공족으로 3년 된 제가 직접 경험한 카공 카페 꿀팁을 공유합니다!\n\n✅ 평일 오전이 자리 잡기 가장 좋은 시간\n✅ 콘센트 위치는 미리 네이버 지도 사진 탭에서 확인\n✅ 아이스 아메리카노 리필 가능한 곳 리스트\n✅ 시간 제한 없는 카페 TOP 5',
+    cafeLink: null,
+    images: [],
+    liked: false,
+  },
+  {
+    id: 3, type: 'review',
+    user: '이준혁', initial: '이', color: '#A87CE8',
+    date: '어제', likes: 31, comments: 8, views: 210,
+    title: '⭐⭐⭐⭐⭐ 카페 오르다 — 망원 루프탑 강추',
+    text: '여자친구랑 데이트로 갔는데 노을 뷰가 진짜 미쳤어요. 음료도 맛있고 분위기도 너무 좋았습니다. 주말 저녁에는 웨이팅이 있으니까 미리 가세요!',
+    cafeLink: '카페 오르다',
+    cafeId: 3,
+    images: [
+      'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=200&q=70',
+    ],
+    liked: false,
+  },
+  {
+    id: 4, type: 'talk',
+    user: '서연_cafe', initial: '서', color: '#7CE8B8',
+    date: '어제', likes: 22, comments: 41, views: 445,
+    title: '요즘 서울에서 가장 핫한 카페 어디라고 생각하세요?',
+    text: '개인적으로 성수동이 요즘 제일 핫한 것 같은데... 다들 어디가 가장 핫하다고 생각하나요? 저는 최근에 을지로 쪽도 굉장히 감성 카페들이 많아졌더라고요!',
+    cafeLink: null,
+    images: [],
+    liked: false,
+  },
+  {
+    id: 5, type: 'tour',
+    user: '카페순례자', initial: '카', color: '#E87C9E',
+    date: '2일 전', likes: 64, comments: 17, views: 532,
+    title: '북촌·서촌 한옥 카페 투어 완벽 가이드 🏯',
+    text: '한옥 카페의 감성을 제대로 느끼고 싶다면 북촌-서촌 코스를 추천해요. 포레스트 카페 → 빌라드아홉 → 통의동 보안여관 순서로 돌면 딱 반나기 코스!',
+    cafeLink: '포레스트 카페',
+    cafeId: 2,
+    images: [
+      'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=200&q=70',
+      'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=200&q=70',
+    ],
+    liked: false,
+  },
+  {
+    id: 6, type: 'tip',
+    user: '커피덕후김', initial: '커', color: '#C8A87C',
+    date: '3일 전', likes: 105, comments: 29, views: 1203,
+    title: '💡 스페셜티 커피 입문자를 위한 서울 카페 추천',
+    text: '스페셜티 커피에 이제 막 입문했다면 이 글을 읽어보세요. 원두별 맛의 차이, 추출 방식별 특징, 그리고 입문자가 꼭 가봐야 할 서울 스페셜티 카페 10곳을 엄선했습니다!',
+    cafeLink: null,
+    images: [],
+    liked: false,
+  },
+];
+
+const HOT_POSTS = [
+  '서울에서 콘센트 많은 카페 BEST 10 (2026 최신)',
+  '강남 vs 성수동, 요즘 더 핫한 곳은?',
+  '반려견 동반 가능 카페 완벽 정리',
+  '을지로 감성 카페 숨은 명소 5곳',
+  '카공할 때 눈치 안 줘서 좋은 카페들',
+];
+
+const TOP_REVIEWERS = [
+  { name: '커피덕후김', initial: '커', color: '#C8A87C', count: 48, badge: '🥇 1위' },
+  { name: '서연_cafe',  initial: '서', color: '#7CE8B8', count: 41, badge: '🥈 2위' },
+  { name: '카페순례자', initial: '카', color: '#E87C9E', count: 37, badge: '🥉 3위' },
+  { name: '프리랜서박', initial: '박', color: '#7C9EE8', count: 29, badge: '4위'   },
+];
+
+const CAFE_VOTES = [
+  { name: '브루클린 더 커피', img: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=80&q=60', pct: 72 },
+  { name: '카페 오르다',      img: 'https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=80&q=60', pct: 58 },
+  { name: '어니언 성수',      img: 'https://images.unsplash.com/photo-1498804103079-a6351b050096?w=80&q=60', pct: 45 },
+];
+
+/* ─── 타입 정보 ─── */
+const TYPE_INFO = {
+  tour:   { label: '카페투어', cls: 'tour'   },
+  review: { label: '리뷰',     cls: 'review' },
+  tip:    { label: '꿀팁',     cls: 'tip'    },
+  talk:   { label: '자유톡',   cls: 'talk'   },
+};
+
+let currentTab = 'all';
+
+/* ─── 탭 전환 ─── */
+function switchTab(el, tab) {
+  currentTab = tab;
+  document.querySelectorAll('.comm-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderPosts();
+}
+
+/* ─── 피드 렌더 ─── */
+function renderPosts() {
+  const list = currentTab === 'all' ? POSTS : POSTS.filter(p => p.type === currentTab);
+  document.getElementById('postList').innerHTML = list.map(p => {
+    const ti = TYPE_INFO[p.type];
+    const imgs = p.images.map(src =>
+      `<img class="post-img" src="${src}" alt="" loading="lazy"/>`).join('');
+    const cafeTag = p.cafeLink
+      ? `<a href="cafe-detail.html?id=${p.cafeId}" class="post-cafe-link" onclick="event.stopPropagation()">
+           ☕ ${p.cafeLink}
+         </a>`
+      : '';
+    return `
+      <div class="post-card" id="post${p.id}">
+        <div class="post-header">
+          <div class="post-avatar" style="background:${p.color}">${p.initial}</div>
+          <div style="flex:1;">
+            <div class="post-meta-name">${p.user}</div>
+            <div class="post-meta-info">
+              <span class="post-badge ${ti.cls}">${ti.label}</span>
+              ${p.date} · 조회 ${p.views}
+            </div>
+          </div>
+          <button style="font-size:1.1rem; color:var(--text-muted); padding:4px 8px; border-radius:6px; transition:background .15s;"
+                  onmouseover="this.style.background='var(--bg-warm)'" onmouseout="this.style.background='none'">⋯</button>
+        </div>
+        <div class="post-title">${p.title}</div>
+        <div class="post-text">${p.text.replace(/\n/g,'<br/>')}</div>
+        ${imgs ? `<div class="post-imgs">${imgs}</div>` : ''}
+        ${cafeTag}
+        <div class="post-footer">
+          <div class="post-action-btn ${p.liked?'liked':''}" onclick="toggleLike(${p.id},this)">
+            ${p.liked ? '❤️' : '🤍'} <span id="like${p.id}">${p.likes}</span>
+          </div>
+          <div class="post-action-btn">💬 <span>${p.comments}</span></div>
+          <div class="post-action-btn">🔗 공유</div>
+          <div class="post-action-btn" style="margin-left:auto">🔖 저장</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ─── 좋아요 토글 ─── */
+function toggleLike(id, btn) {
+  const post = POSTS.find(p => p.id === id);
+  post.liked = !post.liked;
+  post.likes += post.liked ? 1 : -1;
+  btn.classList.toggle('liked', post.liked);
+  btn.innerHTML = `${post.liked ? '❤️' : '🤍'} <span id="like${id}">${post.likes}</span>`;
+}
+
+/* ─── 게시물 작성 ─── */
+function submitPost() {
+  const text = document.getElementById('newPostText').value.trim();
+  if (!text) return;
+  const newPost = {
+    id: Date.now(), type: 'talk',
+    user: '나', initial: '나', color: '#6B4226',
+    date: '방금 전', likes: 0, comments: 0, views: 1,
+    title: text.slice(0, 40) + (text.length > 40 ? '...' : ''),
+    text, cafeLink: null, images: [], liked: false,
+  };
+  POSTS.unshift(newPost);
+  document.getElementById('newPostText').value = '';
+  renderPosts();
+  window.scrollTo({ top: 400, behavior: 'smooth' });
+}
+
+/* ─── 사이드바 ─── */
+function renderSidebar() {
+  document.getElementById('hotPosts').innerHTML = HOT_POSTS.map((t, i) => `
+    <div class="hot-post-item">
+      <div class="hot-rank ${i < 2 ? 'top' : ''}">${i + 1}</div>
+      <div class="hot-post-title">${t}</div>
+    </div>`).join('');
+
+  document.getElementById('topReviewers').innerHTML = TOP_REVIEWERS.map(r => `
+    <div class="top-reviewer-item">
+      <div class="tr-avatar" style="background:${r.color}">${r.initial}</div>
+      <div><div class="tr-name">${r.name}</div><div class="tr-count">리뷰 ${r.count}개</div></div>
+      <span class="tr-badge">${r.badge}</span>
+    </div>`).join('');
+
+  document.getElementById('cafeVotes').innerHTML = CAFE_VOTES.map(v => `
+    <div class="cafe-vote-item">
+      <img class="vote-thumb" src="${v.img}" alt="${v.name}" loading="lazy"/>
+      <div class="vote-bar-wrap">
+        <div class="vote-name">${v.name}</div>
+        <div class="vote-bar-track">
+          <div class="vote-bar-fill" style="width:${v.pct}%"></div>
+        </div>
+        <div class="vote-pct">${v.pct}% 투표</div>
+      </div>
+    </div>`).join('');
+}
+
+function loadMorePosts() {
+  alert('더 많은 게시물을 불러옵니다. (백엔드 API 연동 시 구현)');
+}
+
+renderPosts();
+renderSidebar();
+</script>
+</body>
+</html>

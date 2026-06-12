@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>카페인 서울 — 서울 카페 소개 플랫폼</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    /* page-specific tweaks */
+    .banner {
+      background: var(--primary); color: #fff;
+      text-align: center; padding: 10px 24px;
+      font-size: .85rem; font-weight: 500;
+    }
+    .banner a { color: var(--accent); font-weight: 700; }
+    .section-divider { height: 1px; background: var(--border); max-width: 1200px; margin: 0 auto; }
+    .hotplace-wrap { max-width: 1200px; margin: 0 auto; padding: 64px 24px; }
+    .scroll-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    @media(max-width:1024px){ .scroll-row { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:600px){ .scroll-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- 상단 배너 -->
+<div class="banner">
+  🎉 카페인 서울 베타 오픈! 리뷰 작성 시 음료 쿠폰 증정 →
+  <a href="#">이벤트 참여하기</a>
+</div>
+
+<!-- GNB -->
+<header class="gnb">
+  <div class="gnb-inner">
+    <a href="index.html" class="gnb-logo">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="13" fill="#6B4226"/>
+        <path d="M8 10 Q10 8 12 10 Q14 12 16 10 Q18 8 20 10" stroke="#F5E6D3" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M8 18 Q14 20 20 18 Q20 22 14 23 Q8 22 8 18Z" fill="#F5E6D3"/>
+        <rect x="11" y="10" width="6" height="8" rx="1" fill="#F5E6D3" opacity=".3"/>
+      </svg>
+      카페인 서울
+    </a>
+    <nav class="gnb-nav">
+      <a href="index.html" class="active">홈</a>
+      <a href="region.html">지역별</a>
+      <a href="index.html#themeGrid">테마별</a>
+      <a href="map.html">지도보기</a>
+      <a href="community.html">커뮤니티</a>
+      <a href="#">이벤트</a>
+    </nav>
+    <div class="gnb-actions">
+      <button class="btn-ghost">회원가입</button>
+      <button class="btn-login">로그인</button>
+    </div>
+  </div>
+</header>
+
+<!-- 히어로 섹션 -->
+<section class="hero">
+  <div class="hero-eyebrow">☕ 서울 3,200+ 카페 데이터</div>
+  <h1>서울에서 <span>딱 맞는 카페</span>를<br/>지금 찾아보세요</h1>
+  <p>구 이름, 지하철역, 또는 분위기로 검색하면<br/>당신의 취향에 꼭 맞는 카페를 추천해드려요.</p>
+  <div class="search-box">
+    <span style="font-size:1.1rem; margin-right:6px;">🔍</span>
+    <input type="text" id="searchInput" placeholder="성수동, 홍대입구, 감성카페..." />
+    <button class="btn-search" onclick="handleSearch()">
+      검색하기
+    </button>
+  </div>
+  <div class="hero-tags">
+    <span class="hero-tag" onclick="filterByTag(this,'작업하기좋은')">#작업하기좋은</span>
+    <span class="hero-tag" onclick="filterByTag(this,'데이트코스')">#데이트코스</span>
+    <span class="hero-tag" onclick="filterByTag(this,'인스타감성')">#인스타감성</span>
+    <span class="hero-tag" onclick="filterByTag(this,'반려동물동반')">#반려동물동반</span>
+    <span class="hero-tag" onclick="filterByTag(this,'디저트맛집')">#디저트맛집</span>
+    <span class="hero-tag" onclick="filterByTag(this,'한옥감성')">#한옥감성</span>
+  </div>
+</section>
+
+<!-- 이번 주 핫플레이스 -->
+<div class="hotplace-wrap">
+  <div class="section-header">
+    <div>
+      <div class="section-title">🔥 이번 주 <span>핫플레이스</span></div>
+      <div class="section-sub">가장 많이 방문한 서울 카페 TOP 4</div>
+    </div>
+    <a href="#" class="view-all">전체보기 →</a>
+  </div>
+  <div class="scroll-row" id="hotCafeGrid"></div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- 테마별 추천 -->
+<div class="theme-section">
+  <div class="section" style="padding: 64px 24px;">
+    <div class="section-header">
+      <div>
+        <div class="section-title">✨ 테마별 <span>추천</span></div>
+        <div class="section-sub">어떤 카페를 찾고 계신가요?</div>
+      </div>
+    </div>
+    <div class="theme-grid" id="themeGrid"></div>
+  </div>
+</div>
+
+<!-- 테마 필터 결과 -->
+<div class="section" id="themeResultSection" style="display:none;">
+  <div class="section-header">
+    <div>
+      <div class="section-title" id="themeResultTitle"></div>
+      <div class="section-sub" id="themeResultSub"></div>
+    </div>
+    <button class="view-all" onclick="clearThemeFilter()">전체 보기 ✕</button>
+  </div>
+  <div class="card-grid" id="themeResultGrid"></div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- 지역별 탐색 -->
+<div class="district-section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">📍 지역별 <span>탐색</span></div>
+      <div class="section-sub">서울 25개 구 카페를 한눈에</div>
+    </div>
+  </div>
+  <div class="district-chips" id="districtChips"></div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- 신규 등록 카페 -->
+<div class="section">
+  <div class="section-header">
+    <div>
+      <div class="section-title">🆕 새로 <span>등록된 카페</span></div>
+      <div class="section-sub">이번 달 새로 추가된 카페들</div>
+    </div>
+    <a href="#" class="view-all">전체보기 →</a>
+  </div>
+  <div class="card-grid" id="newCafeGrid"></div>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- 유저 리뷰 스트립 -->
+<section class="review-strip">
+  <div style="max-width:1200px; margin:0 auto; padding:0 24px;">
+    <div class="section-header" style="margin-bottom:0;">
+      <div>
+        <div class="section-title">💬 실제 방문자 <span style="color:var(--accent)">후기</span></div>
+        <div class="section-sub" style="color:rgba(255,255,255,.6);">카페인 서울 유저들의 생생한 리뷰</div>
+      </div>
+    </div>
+    <div class="review-cards" id="reviewCards"></div>
+  </div>
+</section>
+
+<!-- 푸터 -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">☕ 카페인 서울</div>
+      <p class="footer-desc">서울 곳곳의 감성 카페, 작업하기 좋은 카페,<br/>데이트 코스 카페를 한눈에 모아드립니다.<br/>당신의 완벽한 카페 시간을 위해.</p>
+    </div>
+    <div class="footer-col">
+      <h4>서비스</h4>
+      <a href="#">카페 찾기</a>
+      <a href="#">지도보기</a>
+      <a href="#">테마별 추천</a>
+      <a href="#">이벤트</a>
+    </div>
+    <div class="footer-col">
+      <h4>커뮤니티</h4>
+      <a href="#">카페 리뷰</a>
+      <a href="#">카페 투어 기록</a>
+      <a href="#">카페 등록 신청</a>
+      <a href="#">사장님 페이지</a>
+    </div>
+    <div class="footer-col">
+      <h4>고객지원</h4>
+      <a href="#">공지사항</a>
+      <a href="#">FAQ</a>
+      <a href="#">문의하기</a>
+      <a href="#">개인정보처리방침</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 카페인 서울. All rights reserved.</span>
+    <span>서울특별시 성동구 성수이로 78</span>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+/* ─── Render Functions ──────────────────────── */
+function renderStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5 ? 1 : 0;
+  return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5 - full - half);
+}
+
+function cafeCardHTML(cafe) {
+  const badgeHTML = cafe.badge
+    ? `<div class="card-badge ${cafe.badge}">${cafe.badge === 'hot' ? '🔥 HOT' : '🆕 NEW'}</div>`
+    : '';
+  const tagsHTML = cafe.tags.slice(0, 2)
+    .map(t => `<span class="tag-pill">#${t}</span>`).join('');
+  return `
+    <div class="cafe-card" onclick="location.href='cafe-detail.html?id=${cafe.id}'">
+      <div class="card-img">
+        <img src="${cafe.images[0]}" alt="${cafe.name}" loading="lazy" />
+        ${badgeHTML}
+        <button class="card-save" title="저장" onclick="event.stopPropagation(); this.textContent = this.textContent==='🤍'?'❤️':'🤍'">🤍</button>
+      </div>
+      <div class="card-body">
+        <div class="card-tags">${tagsHTML}</div>
+        <div class="card-name">${cafe.name}</div>
+        <div class="card-location">📍 ${cafe.district} · ${cafe.station}역</div>
+        <div class="card-meta">
+          <div class="card-rating">
+            <span class="stars">${renderStars(cafe.rating)}</span>
+            ${cafe.rating}
+            <span class="card-review-count">(${cafe.reviewCount})</span>
+          </div>
+          <div style="display:flex;gap:6px;font-size:.8rem;">
+            ${cafe.wifi ? '<span title="와이파이">📶</span>' : ''}
+            ${cafe.outlet ? '<span title="콘센트">🔌</span>' : ''}
+            ${cafe.pet ? '<span title="반려동물">🐾</span>' : ''}
+            ${cafe.parking ? '<span title="주차">🚗</span>' : ''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ─── Hot Cafes ─────────────────────────────── */
+function renderHotCafes() {
+  const hot = CAFES.filter(c => c.badge === 'hot').slice(0, 4);
+  document.getElementById('hotCafeGrid').innerHTML = hot.map(cafeCardHTML).join('');
+}
+
+/* ─── New Cafes ─────────────────────────────── */
+function renderNewCafes() {
+  const newCafes = CAFES.filter(c => c.badge === 'new').concat(
+    CAFES.filter(c => !c.badge)
+  ).slice(0, 4);
+  document.getElementById('newCafeGrid').innerHTML = newCafes.map(cafeCardHTML).join('');
+}
+
+/* ─── Themes ─────────────────────────────────── */
+function renderThemes() {
+  document.getElementById('themeGrid').innerHTML = THEMES.map(t => `
+    <div class="theme-card" onclick="filterByTag(null,'${t.key}',this)">
+      <div class="theme-icon">${t.icon}</div>
+      <div class="theme-name">${t.name}</div>
+      <div class="theme-count">${t.count}개 카페</div>
+    </div>`).join('');
+}
+
+/* ─── Districts ──────────────────────────────── */
+function renderDistricts() {
+  document.getElementById('districtChips').innerHTML = DISTRICTS.map(d => `
+    <div class="district-chip ${d.popular ? 'popular' : ''}"
+         onclick="filterByDistrict('${d.name}')">
+      ${d.popular ? '🔥 ' : '📍 '}${d.name}
+      <span class="count">${d.count}</span>
+    </div>`).join('');
+}
+
+/* ─── Reviews ────────────────────────────────── */
+function renderReviews() {
+  document.getElementById('reviewCards').innerHTML = REVIEWS.map(r => `
+    <div class="review-card">
+      <div class="review-card-header">
+        <div class="reviewer-avatar" style="background:${r.color}">${r.initial}</div>
+        <div>
+          <div class="reviewer-name">${r.user}</div>
+          <div class="reviewer-cafe">${r.cafe}</div>
+        </div>
+        <div class="review-stars" style="margin-left:auto">${'★'.repeat(r.rating)}</div>
+      </div>
+      <div class="review-text">${r.text}</div>
+    </div>`).join('');
+}
+
+/* ─── Search ─────────────────────────────────── */
+function handleSearch() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) return;
+  const results = CAFES.filter(c =>
+    c.name.includes(q) || c.district.includes(q) ||
+    c.station.includes(q) || c.tags.some(t => t.includes(q)) ||
+    c.address.includes(q)
+  );
+  showThemeResults(`"${q}" 검색 결과`, `${results.length}개 카페를 찾았어요`, results);
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSearch();
+});
+
+/* ─── Tag Filter ─────────────────────────────── */
+function filterByTag(el, tag, themeEl) {
+  document.querySelectorAll('.hero-tag').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.theme-card').forEach(t => t.classList.remove('active'));
+  if (themeEl) themeEl.classList.add('active');
+
+  const results = CAFES.filter(c => c.tags.includes(tag));
+  const theme = THEMES.find(t => t.key === tag);
+  const icon = theme ? theme.icon + ' ' : '';
+  showThemeResults(`${icon}${tag} 카페`, `${results.length}개 카페 · 서울 전역`, results);
+}
+
+function filterByDistrict(district) {
+  const results = CAFES.filter(c => c.district.includes(district) || c.address.includes(district));
+  showThemeResults(`📍 ${district} 카페`, `${results.length}개 카페 발견`, results);
+}
+
+function showThemeResults(title, sub, results) {
+  const sec = document.getElementById('themeResultSection');
+  document.getElementById('themeResultTitle').innerHTML = title;
+  document.getElementById('themeResultSub').textContent = sub;
+  document.getElementById('themeResultGrid').innerHTML =
+    results.length
+      ? results.map(cafeCardHTML).join('')
+      : '<p style="color:var(--text-muted);padding:24px 0;">결과가 없습니다.</p>';
+  sec.style.display = 'block';
+  sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearThemeFilter() {
+  document.getElementById('themeResultSection').style.display = 'none';
+  document.querySelectorAll('.hero-tag,.theme-card').forEach(el => el.classList.remove('active'));
+}
+
+/* ─── Init ───────────────────────────────────── */
+renderHotCafes();
+renderNewCafes();
+renderThemes();
+renderDistricts();
+renderReviews();
+</script>
+</body>
+</html>

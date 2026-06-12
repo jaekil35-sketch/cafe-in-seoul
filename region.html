@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>지역별 카페 — 카페인 서울</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    .region-hero {
+      background: linear-gradient(135deg, #2D1B0E 0%, #6B4226 60%, #A0622A 100%);
+      padding: 56px 24px 48px;
+      text-align: center; color: #fff;
+    }
+    .region-hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 10px; }
+    .region-hero p { font-size: 1rem; opacity: .8; }
+
+    .region-page-layout {
+      max-width: 1200px; margin: 0 auto; padding: 40px 24px;
+      display: grid; grid-template-columns: 260px 1fr; gap: 32px;
+      align-items: start;
+    }
+
+    /* ─── 좌측 필터 패널 ─── */
+    .filter-panel {
+      background: var(--bg-card); border-radius: var(--radius-md);
+      border: 1.5px solid var(--border); overflow: hidden;
+      position: sticky; top: 80px;
+    }
+    .filter-panel-title {
+      padding: 16px 20px; font-weight: 800; font-size: .95rem;
+      background: var(--bg-warm); border-bottom: 1px solid var(--border);
+    }
+    .filter-group { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .filter-group-label {
+      font-size: .8rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 10px;
+    }
+    .filter-check-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 0; cursor: pointer; font-size: .88rem; color: var(--text-sub);
+      transition: color .15s;
+    }
+    .filter-check-row:hover { color: var(--primary); }
+    .filter-check-row input[type=checkbox] { accent-color: var(--primary); width: 15px; height: 15px; cursor: pointer; }
+    .filter-check-row span { flex: 1; }
+    .filter-check-row .check-count { font-size: .78rem; color: var(--text-muted); }
+    .rating-range { display: flex; flex-direction: column; gap: 6px; }
+    .rating-opt {
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+      padding: 6px 10px; border-radius: var(--radius-sm); font-size: .88rem;
+      color: var(--text-sub); transition: all .15s;
+    }
+    .rating-opt:hover, .rating-opt.active { background: var(--bg-warm); color: var(--primary); }
+    .rating-opt .stars { color: #F5A623; }
+    .filter-reset {
+      width: calc(100% - 32px); margin: 16px;
+      padding: 10px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); color: var(--text-sub);
+      font-size: .88rem; font-weight: 600; cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-reset:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* ─── 우측 결과 ─── */
+    .result-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+    }
+    .result-count { font-size: 1rem; font-weight: 700; }
+    .result-count span { color: var(--primary); }
+    .sort-select {
+      padding: 8px 14px; border-radius: var(--radius-sm);
+      border: 1.5px solid var(--border); background: #fff;
+      font-size: .88rem; color: var(--text-sub);
+      cursor: pointer; outline: none;
+    }
+    .sort-select:focus { border-color: var(--primary); }
+    .active-filters {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px;
+    }
+    .active-filter-pill {
+      display: flex; align-items: center; gap: 5px;
+      background: var(--primary); color: #fff;
+      padding: 4px 12px; border-radius: 20px; font-size: .8rem; font-weight: 600;
+    }
+    .active-filter-pill button {
+      color: rgba(255,255,255,.7); font-size: .9rem; line-height: 1;
+      transition: color .15s;
+    }
+    .active-filter-pill button:hover { color: #fff; }
+
+    /* 지역 탭 */
+    .district-tabs {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .district-tab {
+      padding: 8px 18px; border-radius: 20px; font-size: .88rem; font-weight: 600;
+      border: 1.5px solid var(--border); background: #fff; color: var(--text-sub);
+      cursor: pointer; transition: all .2s;
+    }
+    .district-tab:hover { border-color: var(--primary); color: var(--primary); }
+    .district-tab.active {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+
+    .result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media(max-width:900px){ .result-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .load-more-btn {
+      display: block; width: 100%; margin-top: 32px;
+      padding: 14px; background: var(--bg-warm);
+      border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+      font-size: .95rem; font-weight: 700; color: var(--text-sub);
+      cursor: pointer; transition: all .2s; text-align: center;
+    }
+    .load-more-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    @media(max-width:768px){
+      .region-page-layout { grid-template-columns: 1fr; }
+      .filter-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="gnb">
+  <div class="gnb-inner">
+    <a href="index.html" class="gnb-logo">
+      <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" fill="#6B4226"/><path d="M8 10 Q10 8 12 10 Q14 12 16 10 Q18 8 20 10" stroke="#F5E6D3" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M8 18 Q14 20 20 18 Q20 22 14 23 Q8 22 8 18Z" fill="#F5E6D3"/></svg>
+      카페인 서울
+    </a>
+    <nav class="gnb-nav">
+      <a href="index.html">홈</a>
+      <a href="region.html" class="active">지역별</a>
+      <a href="index.html#themeGrid">테마별</a>
+      <a href="map.html">지도보기</a>
+      <a href="community.html">커뮤니티</a>
+    </nav>
+    <div class="gnb-actions">
+      <button class="btn-ghost">회원가입</button>
+      <button class="btn-login">로그인</button>
+    </div>
+  </div>
+</header>
+
+<!-- 히어로 -->
+<div class="region-hero">
+  <h1>📍 지역별 카페 탐색</h1>
+  <p>서울 25개 구, 인기 동네별 카페를 모두 모았어요</p>
+</div>
+
+<div class="region-page-layout">
+
+  <!-- 좌측 필터 -->
+  <aside>
+    <div class="filter-panel">
+      <div class="filter-panel-title">🎛️ 필터</div>
+
+      <!-- 편의시설 -->
+      <div class="filter-group">
+        <div class="filter-group-label">편의시설</div>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-filter="wifi" /><span>📶 와이파이</span></label>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-filter="outlet" /><span>🔌 콘센트</span></label>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-filter="parking" /><span>🚗 주차 가능</span></label>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-filter="pet" /><span>🐾 반려동물 동반</span></label>
+      </div>
+
+      <!-- 테마 -->
+      <div class="filter-group">
+        <div class="filter-group-label">테마</div>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-tag="작업하기좋은" /><span>💻 작업하기좋은</span><span class="check-count">48</span></label>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-tag="인스타감성" /><span>📸 인스타감성</span><span class="check-count">76</span></label>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-tag="데이트코스" /><span>💑 데이트코스</span><span class="check-count">55</span></label>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-tag="디저트맛집" /><span>🎂 디저트맛집</span><span class="check-count">61</span></label>
+        <label class="filter-check-row"><input type="checkbox" onchange="applyFilters()" data-tag="한옥감성" /><span>🏯 한옥감성</span><span class="check-count">18</span></label>
+      </div>
+
+      <!-- 평점 -->
+      <div class="filter-group">
+        <div class="filter-group-label">최소 평점</div>
+        <div class="rating-range">
+          <div class="rating-opt active" onclick="setMinRating(0,this)"><span class="stars">★★★★★</span> 전체</div>
+          <div class="rating-opt" onclick="setMinRating(4.5,this)"><span class="stars">★★★★★</span> 4.5 이상</div>
+          <div class="rating-opt" onclick="setMinRating(4.0,this)"><span class="stars">★★★★☆</span> 4.0 이상</div>
+          <div class="rating-opt" onclick="setMinRating(3.5,this)"><span class="stars">★★★½☆</span> 3.5 이상</div>
+        </div>
+      </div>
+
+      <button class="filter-reset" onclick="resetFilters()">필터 초기화</button>
+    </div>
+  </aside>
+
+  <!-- 우측 결과 -->
+  <div>
+    <!-- 지역 탭 -->
+    <div class="district-tabs" id="districtTabs">
+      <div class="district-tab active" onclick="setDistrict('전체',this)">전체</div>
+      <div class="district-tab" onclick="setDistrict('성수동',this)">성수동</div>
+      <div class="district-tab" onclick="setDistrict('연남동',this)">연남동</div>
+      <div class="district-tab" onclick="setDistrict('홍대',this)">홍대</div>
+      <div class="district-tab" onclick="setDistrict('한남동',this)">한남동</div>
+      <div class="district-tab" onclick="setDistrict('북촌',this)">북촌</div>
+      <div class="district-tab" onclick="setDistrict('서촌',this)">서촌</div>
+      <div class="district-tab" onclick="setDistrict('청담동',this)">청담동</div>
+      <div class="district-tab" onclick="setDistrict('이태원',this)">이태원</div>
+      <div class="district-tab" onclick="setDistrict('강남',this)">강남</div>
+      <div class="district-tab" onclick="setDistrict('종로',this)">종로</div>
+      <div class="district-tab" onclick="setDistrict('망원동',this)">망원동</div>
+      <div class="district-tab" onclick="setDistrict('합정',this)">합정</div>
+      <div class="district-tab" onclick="setDistrict('잠실',this)">잠실</div>
+      <div class="district-tab" onclick="setDistrict('을지로',this)">을지로</div>
+      <div class="district-tab" onclick="setDistrict('신촌',this)">신촌</div>
+    </div>
+
+    <!-- 활성 필터 표시 -->
+    <div class="active-filters" id="activeFilterBadges"></div>
+
+    <!-- 결과 헤더 -->
+    <div class="result-header">
+      <div class="result-count">총 <span id="resultCount">8</span>개 카페</div>
+      <select class="sort-select" onchange="applySort(this.value)">
+        <option value="rating">평점 높은 순</option>
+        <option value="review">리뷰 많은 순</option>
+        <option value="name">이름 순</option>
+      </select>
+    </div>
+
+    <!-- 카드 그리드 -->
+    <div class="result-grid" id="resultGrid"></div>
+    <button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()">더보기 (더 많은 카페 보기)</button>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">☕ 카페인 서울</div>
+      <p class="footer-desc">서울 곳곳의 감성 카페를 한눈에.</p>
+    </div>
+    <div class="footer-col"><h4>서비스</h4><a href="index.html">홈</a><a href="map.html">지도보기</a></div>
+    <div class="footer-col"><h4>커뮤니티</h4><a href="community.html">커뮤니티</a></div>
+    <div class="footer-col"><h4>고객지원</h4><a href="#">FAQ</a><a href="#">문의하기</a></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 카페인 서울.</span></div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+let currentDistrict = '전체';
+let minRating = 0;
+let sortBy = 'rating';
+const PAGE_SIZE = 9;
+let visibleCount = PAGE_SIZE;
+let filteredList = [];
+
+function getFiltered() {
+  const checkedFilters = [...document.querySelectorAll('[data-filter]:checked')].map(el => el.dataset.filter);
+  const checkedTags    = [...document.querySelectorAll('[data-tag]:checked')].map(el => el.dataset.tag);
+
+  let list = CAFES.filter(cafe => {
+    if (currentDistrict !== '전체' && !cafe.district.includes(currentDistrict) && !cafe.address.includes(currentDistrict)) return false;
+    if (cafe.rating < minRating) return false;
+    if (checkedFilters.includes('wifi')    && !cafe.wifi)    return false;
+    if (checkedFilters.includes('outlet')  && !cafe.outlet)  return false;
+    if (checkedFilters.includes('parking') && !cafe.parking) return false;
+    if (checkedFilters.includes('pet')     && !cafe.pet)     return false;
+    if (checkedTags.length > 0 && !checkedTags.some(t => cafe.tags.includes(t))) return false;
+    return true;
+  });
+
+  if (sortBy === 'rating')  list.sort((a,b) => b.rating - a.rating);
+  if (sortBy === 'review')  list.sort((a,b) => b.reviewCount - a.reviewCount);
+  if (sortBy === 'name')    list.sort((a,b) => a.name.localeCompare(b.name));
+  return list;
+}
+
+function cafeCardHTML(cafe) {
+  return `
+    <div class="cafe-card" onclick="location.href='cafe-detail.html?id=${cafe.id}'">
+      <div class="card-img">
+        <img src="${cafe.images[0]}" alt="${cafe.name}" loading="lazy"/>
+        ${cafe.badge ? `<div class="card-badge ${cafe.badge}">${cafe.badge==='hot'?'🔥 HOT':'🆕 NEW'}</div>` : ''}
+        <button class="card-save" onclick="event.stopPropagation();this.textContent=this.textContent==='🤍'?'❤️':'🤍'">🤍</button>
+      </div>
+      <div class="card-body">
+        <div class="card-tags">${cafe.tags.slice(0,2).map(t=>`<span class="tag-pill">#${t}</span>`).join('')}</div>
+        <div class="card-name">${cafe.name}</div>
+        <div class="card-location">📍 ${cafe.district} · ${cafe.station}역</div>
+        <div class="card-meta">
+          <div class="card-rating"><span class="stars">★</span>${cafe.rating}<span class="card-review-count">(${cafe.reviewCount})</span></div>
+          <div style="display:flex;gap:5px;font-size:.8rem;">
+            ${cafe.wifi?'<span>📶</span>':''}${cafe.outlet?'<span>🔌</span>':''}${cafe.pet?'<span>🐾</span>':''}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderGrid(list) {
+  filteredList = list;
+  const shown = list.slice(0, visibleCount);
+  document.getElementById('resultCount').textContent = list.length;
+  document.getElementById('resultGrid').innerHTML = shown.map(cafeCardHTML).join('');
+
+  const btn = document.getElementById('loadMoreBtn');
+  if (visibleCount >= list.length) {
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = 'block';
+    btn.textContent = `더보기 (${list.length - visibleCount}개 더 있어요)`;
+  }
+}
+
+function loadMore() {
+  visibleCount += PAGE_SIZE;
+  const grid = document.getElementById('resultGrid');
+  const newCards = filteredList.slice(visibleCount - PAGE_SIZE, visibleCount).map(cafeCardHTML).join('');
+  grid.insertAdjacentHTML('beforeend', newCards);
+
+  const btn = document.getElementById('loadMoreBtn');
+  if (visibleCount >= filteredList.length) {
+    btn.style.display = 'none';
+  } else {
+    btn.textContent = `더보기 (${filteredList.length - visibleCount}개 더 있어요)`;
+  }
+}
+
+function updateActiveBadges() {
+  const badges = [];
+  if (currentDistrict !== '전체') badges.push({ label: currentDistrict, clear: () => setDistrict('전체', document.querySelector('.district-tab')) });
+  if (minRating > 0) badges.push({ label: `평점 ${minRating}+`, clear: () => setMinRating(0, document.querySelector('.rating-opt')) });
+  document.querySelectorAll('[data-filter]:checked').forEach(el =>
+    badges.push({ label: el.parentElement.querySelector('span').textContent.trim(), clear: () => { el.checked = false; applyFilters(); } }));
+  document.querySelectorAll('[data-tag]:checked').forEach(el =>
+    badges.push({ label: '#' + el.dataset.tag, clear: () => { el.checked = false; applyFilters(); } }));
+
+  document.getElementById('activeFilterBadges').innerHTML = badges.map((b, i) => `
+    <div class="active-filter-pill">
+      ${b.label}
+      <button onclick="clearBadge(${i})">✕</button>
+    </div>`).join('');
+  window._badgeClearFns = badges.map(b => b.clear);
+}
+function clearBadge(i) { window._badgeClearFns[i](); }
+
+function applyFilters() {
+  visibleCount = PAGE_SIZE;
+  updateActiveBadges();
+  renderGrid(getFiltered());
+}
+function applySort(v) { sortBy = v; applyFilters(); }
+
+function setDistrict(d, el) {
+  currentDistrict = d;
+  document.querySelectorAll('.district-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+function setMinRating(r, el) {
+  minRating = r;
+  document.querySelectorAll('.rating-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+  applyFilters();
+}
+function resetFilters() {
+  currentDistrict = '전체'; minRating = 0; sortBy = 'rating';
+  document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+  document.querySelectorAll('.district-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.district-tab').classList.add('active');
+  document.querySelectorAll('.rating-opt').forEach(o => o.classList.remove('active'));
+  document.querySelector('.rating-opt').classList.add('active');
+  document.querySelector('.sort-select').value = 'rating';
+  applyFilters();
+}
+
+applyFilters();
+</script>
+</body>
+</html>

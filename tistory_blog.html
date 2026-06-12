@@ -1,0 +1,473 @@
+<!-- 티스토리 HTML 모드에 붙여넣기 -->
+<style>
+  .post-wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+    color: #2C2218;
+    line-height: 1.9;
+    font-size: 16px;
+  }
+
+  /* ── 썸네일 히어로 ── */
+  .post-hero {
+    background: linear-gradient(135deg, #3A1D0E 0%, #6B4226 55%, #A0622A 100%);
+    border-radius: 16px;
+    padding: 52px 40px;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .post-hero::before {
+    content: '☕';
+    font-size: 200px;
+    position: absolute;
+    right: -30px; top: -40px;
+    opacity: .06;
+    line-height: 1;
+  }
+  .post-hero-eyebrow {
+    display: inline-block;
+    background: rgba(255,255,255,.15);
+    color: #FDDCB5;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: 5px 16px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+  }
+  .post-hero h1 {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.35;
+    margin: 0 0 12px;
+  }
+  .post-hero p {
+    color: rgba(255,255,255,.75);
+    font-size: 15px;
+    margin: 0;
+  }
+
+  /* ── 도입부 인트로 박스 ── */
+  .intro-box {
+    background: #FDF6EE;
+    border: 1.5px solid #F0D9BC;
+    border-radius: 14px;
+    padding: 24px 28px;
+    margin-bottom: 40px;
+    font-size: 15.5px;
+    color: #4A2E14;
+    line-height: 2;
+  }
+  .intro-box strong {
+    color: #6B4226;
+    font-weight: 700;
+  }
+
+  /* ── 소제목 박스 (스타일 A: 컬러 배너형) ── */
+  .section-title-a {
+    background: #6B4226;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 800;
+    padding: 14px 22px;
+    border-radius: 10px;
+    margin: 48px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ── 소제목 박스 (스타일 B: 왼쪽 보더 + 배경형) ── */
+  .section-title-b {
+    border-left: 5px solid #E8A87C;
+    background: #FDF6EE;
+    color: #3A1D0E;
+    font-size: 17px;
+    font-weight: 800;
+    padding: 12px 20px;
+    border-radius: 0 10px 10px 0;
+    margin: 48px 0 20px;
+  }
+
+  /* ── 소제목 박스 (스타일 C: 언더라인형) ── */
+  .section-title-c {
+    font-size: 18px;
+    font-weight: 900;
+    color: #3A1D0E;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #6B4226;
+    margin: 48px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── 기능 카드 그리드 ── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 24px 0;
+  }
+  .feature-card {
+    background: #fff;
+    border: 1.5px solid #EDE0D0;
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .feature-card-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .feature-card-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #4A2E14;
+    margin-bottom: 6px;
+  }
+  .feature-card-desc {
+    font-size: 13.5px;
+    color: #7A6050;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  /* ── 인용 박스 ── */
+  .quote-box {
+    background: #F5EDE0;
+    border-left: 4px solid #6B4226;
+    border-radius: 0 10px 10px 0;
+    padding: 18px 22px;
+    margin: 24px 0;
+    font-size: 15px;
+    color: #4A2E14;
+    font-style: italic;
+    line-height: 1.9;
+  }
+
+  /* ── 체크리스트 ── */
+  .checklist {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+  }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 7px 0;
+    font-size: 15px;
+    color: #3A2010;
+    border-bottom: 1px dashed #EDE0D0;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-icon {
+    width: 22px; height: 22px;
+    background: #6B4226;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ── 하이라이트 정보 박스 ── */
+  .info-highlight {
+    background: linear-gradient(135deg, #FDF6EE, #F5E6D3);
+    border: 1.5px solid #E8C8A0;
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin: 24px 0;
+  }
+  .info-highlight-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #6B4226;
+    margin-bottom: 12px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #EDD9B8;
+    font-size: 14.5px;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-key { color: #7A6050; }
+  .info-val { font-weight: 700; color: #3A1D0E; }
+
+  /* ── 단계 스텝 ── */
+  .steps { margin: 20px 0; }
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 36px; height: 36px;
+    background: #6B4226;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .step-body {}
+  .step-title { font-size: 15px; font-weight: 800; color: #3A1D0E; margin-bottom: 4px; }
+  .step-desc { font-size: 14.5px; color: #6A5040; line-height: 1.75; margin: 0; }
+
+  /* ── URL 배너 ── */
+  .url-banner {
+    background: #3A1D0E;
+    border-radius: 14px;
+    padding: 28px 32px;
+    text-align: center;
+    margin: 48px 0 32px;
+  }
+  .url-banner p { color: rgba(255,255,255,.7); font-size: 14px; margin: 0 0 10px; }
+  .url-banner a {
+    color: #FDDCB5;
+    font-size: 20px;
+    font-weight: 900;
+    text-decoration: none;
+    letter-spacing: .02em;
+  }
+  .url-banner a:hover { text-decoration: underline; }
+
+  /* ── 해시태그 ── */
+  .hashtag-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #EDE0D0;
+  }
+  .hashtag {
+    background: #F5EDE0;
+    color: #6B4226;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  /* ── 본문 단락 ── */
+  .post-wrap p { margin: 0 0 18px; }
+
+  @media (max-width: 600px) {
+    .feature-grid { grid-template-columns: 1fr; }
+    .post-hero { padding: 36px 22px; }
+    .post-hero h1 { font-size: 22px; }
+  }
+</style>
+
+<div class="post-wrap">
+
+  <!-- 히어로 -->
+  <div class="post-hero">
+    <div class="post-hero-eyebrow">☕ 서울 카페 통합 플랫폼</div>
+    <h1>서울 카페, 이제 한 곳에서<br>검색부터 리뷰까지 끝냅니다</h1>
+    <p>카페인 서울 — 성수동, 홍대, 한남동, 북촌까지 서울 전 지역 카페 탐색</p>
+  </div>
+
+  <!-- 인트로 -->
+  <div class="intro-box">
+    서울에는 동네마다 개성 넘치는 카페가 넘쳐납니다. 감성 가득한 한옥 카페부터 노트북 펼치기 좋은 대형 작업 카페, 강아지와 함께할 수 있는 반려동물 동반 카페, 노을 보며 데이트하기 딱인 루프탑 카페까지. 그런데 막상 "어디 카페 갈까?" 하면 인스타그램 해시태그, 블로그 후기, 지도 앱을 동시에 켜놓고 30분을 날리게 됩니다.
+    <br><br>
+    <strong>카페인 서울</strong>은 바로 그 불편함에서 출발한 서울 카페 통합 탐색 플랫폼입니다. 지역별 검색, 테마별 필터, 실시간 지도, 방문자 리뷰, 카페 커뮤니티까지 — 카페 찾기에 필요한 모든 것을 한 곳에 담았습니다.
+  </div>
+
+  <!-- 소제목 A형 -->
+  <div class="section-title-a">🔍 원하는 동네와 분위기로 즉시 검색</div>
+
+  <p>카페인 서울 메인 화면의 핵심은 중앙에 자리한 대형 검색창입니다. 구 이름이나 지하철역 이름을 입력하면 해당 지역의 카페 목록이 실시간으로 펼쳐집니다. 성수동, 홍대입구, 연남동, 청담, 안국, 경복궁... 서울 어느 동네든 입력 즉시 결과가 나옵니다.</p>
+
+  <p>검색창 아래에는 가장 자주 찾는 테마 태그 버튼이 배치되어 있어 글자를 입력하지 않아도 원하는 카페를 찾을 수 있습니다.</p>
+
+  <ul class="checklist">
+    <li><span class="check-icon">✓</span> <span>#작업하기좋은 — 와이파이, 콘센트, 조용한 환경이 갖춰진 카공 카페</span></li>
+    <li><span class="check-icon">✓</span> <span>#데이트코스 — 분위기 좋고 인증샷 찍기 좋은 커플 카페</span></li>
+    <li><span class="check-icon">✓</span> <span>#인스타감성 — 인테리어와 음료가 모두 포토제닉한 카페</span></li>
+    <li><span class="check-icon">✓</span> <span>#반려동물동반 — 강아지, 고양이와 함께 입장 가능한 카페</span></li>
+    <li><span class="check-icon">✓</span> <span>#디저트맛집 — 케이크, 마카롱, 타르트 등 디저트가 특별한 카페</span></li>
+    <li><span class="check-icon">✓</span> <span>#한옥감성 — 전통 한옥을 개조한 고즈넉한 분위기의 카페</span></li>
+  </ul>
+
+  <!-- 소제목 B형 -->
+  <div class="section-title-b">🗺️ 지도 위에서 보는 서울 카페 지형도</div>
+
+  <p>지도보기 페이지에 들어가면 서울 지역 지도 위에 카페 핀이 실제 위치에 꽂혀 있습니다. OpenStreetMap 기반의 인터랙티브 지도라 확대/축소가 자유롭고, 핀을 클릭하면 카페 이름과 주소가 팝업으로 나타나며 상세 페이지로 바로 이동할 수 있습니다.</p>
+
+  <p>지도 왼쪽에는 실시간 검색 및 필터 사이드바가 고정되어 있습니다. 카페명이나 지역을 검색하거나, 아래 필터 버튼(작업, 데이트, 펫동반, 감성)을 토글하면 지도 위 핀과 좌측 리스트가 동시에 업데이트됩니다.</p>
+
+  <div class="quote-box">
+    성수동만 해도 카페가 수십 개인데, 지도에서 내 위치 근처 카페를 한눈에 보고 필터로 추리는 방식은 정말 편리합니다. 핀을 클릭하면 사진과 태그가 바로 보이고, 상세 페이지 링크도 바로 연결되어 있어서 이동이 자연스럽습니다.
+  </div>
+
+  <!-- 소제목 A형 -->
+  <div class="section-title-a">🎨 테마별 · 지역별, 두 가지 탐색 축</div>
+
+  <p>카페인 서울에서 카페를 탐색하는 방식은 크게 두 가지입니다.</p>
+
+  <p>첫 번째는 테마별 탐색입니다. 메인 화면 중간의 테마별 추천 섹션에서 8가지 테마 카드 중 하나를 클릭하면 해당 테마에 해당하는 카페 목록 전체가 그리드 형태로 펼쳐집니다. 각 카드에는 몇 개의 카페가 등록되어 있는지 숫자도 함께 표시됩니다.</p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <span class="feature-card-icon">💻</span>
+      <div class="feature-card-title">작업하기좋은</div>
+      <p class="feature-card-desc">와이파이, 콘센트, 조용한 분위기까지 갖춘 카공 최적 카페 48곳</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-card-icon">📸</span>
+      <div class="feature-card-title">인스타감성</div>
+      <p class="feature-card-desc">인테리어, 음료, 공간 전체가 포토제닉한 감성 카페 76곳</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-card-icon">🐾</span>
+      <div class="feature-card-title">반려동물동반</div>
+      <p class="feature-card-desc">강아지, 고양이와 함께 입장 가능한 펫 프렌들리 카페 32곳</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-card-icon">💑</span>
+      <div class="feature-card-title">데이트코스</div>
+      <p class="feature-card-desc">분위기 좋고 인증샷 찍기 좋은 커플 추천 카페 55곳</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-card-icon">🎂</span>
+      <div class="feature-card-title">디저트맛집</div>
+      <p class="feature-card-desc">케이크, 마카롱, 타르트 등 디저트가 특별한 카페 61곳</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-card-icon">🏯</span>
+      <div class="feature-card-title">한옥감성</div>
+      <p class="feature-card-desc">전통 한옥을 개조한 고즈넉한 분위기의 카페 18곳</p>
+    </div>
+  </div>
+
+  <p>두 번째는 지역별 탐색입니다. 지역별 페이지에서는 성수동, 연남동, 홍대, 한남동, 북촌, 서촌, 청담동 등 지역 탭을 눌러 원하는 동네의 카페만 추릴 수 있고, 좌측 필터 패널에서 세부 조건을 추가로 설정할 수 있습니다.</p>
+
+  <div class="info-highlight">
+    <div class="info-highlight-title">지역별 페이지 필터 항목</div>
+    <div class="info-row"><span class="info-key">편의시설</span><span class="info-val">와이파이 · 콘센트 · 주차 · 반려동물</span></div>
+    <div class="info-row"><span class="info-key">테마</span><span class="info-val">작업 · 감성 · 데이트 · 디저트 · 한옥</span></div>
+    <div class="info-row"><span class="info-key">최소 평점</span><span class="info-val">전체 · 4.5 이상 · 4.0 이상 · 3.5 이상</span></div>
+    <div class="info-row"><span class="info-key">정렬 기준</span><span class="info-val">평점 높은 순 · 리뷰 많은 순 · 이름 순</span></div>
+  </div>
+
+  <!-- 소제목 C형 -->
+  <div class="section-title-c">☕ 카페 상세 페이지 — 필요한 정보가 모두 있다</div>
+
+  <p>카페 카드를 클릭하면 상세 페이지로 진입합니다. 상단에는 카페 대표 이미지가 자동으로 넘어가는 슬라이더 형태로 표시되고, 좌우 화살표 버튼과 하단 점 인디케이터로 이미지를 수동으로 넘길 수도 있습니다.</p>
+
+  <p>이미지 아래에는 두 개의 컬럼이 펼쳐집니다. 왼쪽에는 카페 이름, 평점, 테마 태그, 소개 글, 그리고 아이콘과 함께 정리된 상세 정보가 표시됩니다. 오른쪽에는 실제 인터랙티브 지도와 카카오 지도로 이동하는 버튼이 자리합니다.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">기본 정보 확인</div>
+        <p class="step-desc">주소, 전화번호, 영업시간, 휴무일을 한눈에. 지금 영업 중인지 실시간 상태 뱃지로 바로 확인 가능합니다.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">편의시설 체크</div>
+        <p class="step-desc">주차 가능 여부, 반려동물 동반 가능 여부, 와이파이 제공, 콘센트 유무를 아이콘 + 텍스트로 직관적으로 표시합니다.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">지도에서 위치 확인</div>
+        <p class="step-desc">인터랙티브 지도에 위치 핀이 표시되며, 카카오 지도에서 열기 버튼으로 즉시 길 찾기로 연결됩니다.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">인스타그램 링크</div>
+        <p class="step-desc">카페 인스타그램 계정이 연결되어 있어 최신 사진과 이벤트 소식을 바로 확인할 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 소제목 B형 -->
+  <div class="section-title-b">⭐ 방문자 리뷰 시스템과 평점 분포</div>
+
+  <p>상세 페이지 하단에는 실제 방문자 리뷰 섹션이 자리합니다. 5점 만점 평점의 분포를 별점별 비율 바 차트로 시각화해서 보여주기 때문에, 어느 평점대에 리뷰가 집중되어 있는지 한눈에 파악할 수 있습니다.</p>
+
+  <p>리뷰 목록에는 작성자 닉네임, 작성일, 별점, 후기 텍스트가 함께 표시됩니다. 직접 리뷰를 작성할 수도 있는데, 1~5점 별점을 클릭으로 선택하고 최소 10자 이상 후기를 작성하면 리뷰 목록 상단에 즉시 추가됩니다. 카페를 저장하거나 공유하는 버튼도 한 곳에 모여 있어 소셜 공유가 편리합니다.</p>
+
+  <!-- 소제목 C형 -->
+  <div class="section-title-c">👥 카페 커뮤니티 — 취향을 나누는 공간</div>
+
+  <p>카페인 서울은 단순한 정보 플랫폼을 넘어 같은 취향을 가진 사람들이 소통하는 커뮤니티 공간을 함께 제공합니다.</p>
+
+  <p>커뮤니티 피드는 네 가지 탭으로 나뉩니다. 카페투어 기록을 올리는 카페투어 탭, 특정 카페 방문 후기를 공유하는 리뷰 탭, 알아두면 유용한 정보를 나누는 꿀팁 탭, 그리고 자유롭게 대화하는 자유톡 탭이 있습니다. 게시물에 좋아요와 댓글을 남길 수 있고, 직접 글을 작성할 때는 사진 첨부, 카페 태그, 위치 정보도 함께 넣을 수 있습니다.</p>
+
+  <p>커뮤니티 우측 사이드바에는 이번 주 인기 게시물 TOP 5, 인기 태그 클라우드, 이번 주 베스트 리뷰어 순위, 이번 주 인기 카페 투표 결과가 실시간으로 업데이트됩니다. 요즘 서울 카페 씬에서 어떤 곳이 가장 뜨고 있는지 한눈에 파악할 수 있죠.</p>
+
+  <div class="quote-box">
+    카페인 서울 커뮤니티에서 특히 인기 있는 글 유형은 동선이 짜인 지역별 카페 투어 후기, 카공하기 좋은 카페 모음, 강아지와 함께할 수 있는 카페 리스트 같은 실용적인 정보 글들입니다. 여러 곳의 정보를 직접 경험한 방문자가 정리해주는 방식이라 신뢰도가 높습니다.
+  </div>
+
+  <!-- 소제목 A형 -->
+  <div class="section-title-a">🎯 이런 분들에게 특히 추천합니다</div>
+
+  <ul class="checklist">
+    <li><span class="check-icon">→</span> <span>매주 새로운 카페를 찾아 방문하는 카페 투어족</span></li>
+    <li><span class="check-icon">→</span> <span>노트북을 들고 다니며 카페에서 작업하는 카공족, 프리랜서</span></li>
+    <li><span class="check-icon">→</span> <span>주말 데이트 코스를 고민하는 2030 커플</span></li>
+    <li><span class="check-icon">→</span> <span>강아지, 고양이와 함께 카페에 가고 싶은 반려동물 보호자</span></li>
+    <li><span class="check-icon">→</span> <span>서울을 여행하며 감성 카페를 탐방하고 싶은 여행객</span></li>
+    <li><span class="check-icon">→</span> <span>인스타그램에 올릴 감성 사진을 찍고 싶은 분</span></li>
+    <li><span class="check-icon">→</span> <span>익숙한 동네에서 몰랐던 새로운 카페를 발견하고 싶은 분</span></li>
+  </ul>
+
+  <!-- URL 배너 -->
+  <div class="url-banner">
+    <p>지금 바로 접속해보세요</p>
+    <a href="https://cafe-in-seoul.vercel.app" target="_blank">cafe-in-seoul.vercel.app ↗</a>
+  </div>
+
+  <!-- 해시태그 -->
+  <div class="hashtag-wrap">
+    <span class="hashtag">#카페인서울</span>
+    <span class="hashtag">#서울카페</span>
+    <span class="hashtag">#카페추천</span>
+    <span class="hashtag">#성수동카페</span>
+    <span class="hashtag">#홍대카페</span>
+    <span class="hashtag">#연남동카페</span>
+    <span class="hashtag">#한남동카페</span>
+    <span class="hashtag">#북촌카페</span>
+    <span class="hashtag">#서촌카페</span>
+    <span class="hashtag">#카공카페</span>
+    <span class="hashtag">#데이트코스</span>
+    <span class="hashtag">#감성카페</span>
+    <span class="hashtag">#한옥카페</span>
+    <span class="hashtag">#루프탑카페</span>
+    <span class="hashtag">#반려동물카페</span>
+    <span class="hashtag">#디저트카페</span>
+    <span class="hashtag">#카페투어</span>
+    <span class="hashtag">#서울여행</span>
+    <span class="hashtag">#카페지도</span>
+    <span class="hashtag">#카페플랫폼</span>
+    <span class="hashtag">#주말나들이</span>
+    <span class="hashtag">#카페스타그램</span>
+  </div>
+
+</div>

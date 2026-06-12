@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>카페 상세 — 카페인 서울</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <style>
+    .breadcrumb {
+      max-width: 1200px; margin: 0 auto;
+      padding: 16px 24px 0;
+      font-size: .85rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .breadcrumb a { color: var(--text-muted); }
+    .breadcrumb a:hover { color: var(--primary); }
+    .desc-box {
+      background: var(--bg-warm); border-radius: var(--radius-sm);
+      padding: 18px 20px; margin-bottom: 24px;
+      font-size: .92rem; line-height: 1.75; color: var(--text-sub);
+      border-left: 3px solid var(--accent);
+    }
+    .menu-table {
+      width: 100%; border-collapse: collapse; margin-bottom: 24px;
+    }
+    .menu-table th {
+      background: var(--bg-warm); padding: 10px 14px;
+      text-align: left; font-size: .85rem; font-weight: 700;
+      color: var(--text-muted); border-bottom: 1px solid var(--border);
+    }
+    .menu-table td {
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+      font-size: .9rem;
+    }
+    .menu-table tr:last-child td { border-bottom: none; }
+    .nearby-section { max-width: 1200px; margin: 0 auto; padding: 0 24px 64px; }
+    .sns-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      color: #fff; padding: 8px 16px; border-radius: var(--radius-sm);
+      font-size: .88rem; font-weight: 700; text-decoration: none;
+      transition: opacity .2s;
+    }
+    .sns-badge:hover { opacity: .85; }
+    .open-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 20px; font-size: .82rem; font-weight: 700;
+    }
+    .open-badge.open { background: #E6F7F0; color: #1A8A5A; }
+    .open-badge.closed { background: #FEF0EF; color: #D94C3D; }
+  </style>
+</head>
+<body>
+
+<!-- GNB -->
+<header class="gnb">
+  <div class="gnb-inner">
+    <a href="index.html" class="gnb-logo">
+      <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="13" fill="#6B4226"/>
+        <path d="M8 10 Q10 8 12 10 Q14 12 16 10 Q18 8 20 10" stroke="#F5E6D3" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M8 18 Q14 20 20 18 Q20 22 14 23 Q8 22 8 18Z" fill="#F5E6D3"/>
+      </svg>
+      카페인 서울
+    </a>
+    <nav class="gnb-nav">
+      <a href="index.html">홈</a>
+      <a href="region.html">지역별</a>
+      <a href="index.html#themeGrid">테마별</a>
+      <a href="map.html">지도보기</a>
+      <a href="community.html">커뮤니티</a>
+    </nav>
+    <div class="gnb-actions">
+      <button class="btn-ghost">회원가입</button>
+      <button class="btn-login">로그인</button>
+    </div>
+  </div>
+</header>
+
+<!-- 브레드크럼 -->
+<div class="breadcrumb">
+  <a href="index.html">홈</a> › <a href="#">성수동</a> › <span id="bc-name">카페 로딩 중...</span>
+</div>
+
+<!-- 이미지 슬라이더 -->
+<div class="detail-hero" id="sliderArea">
+  <div class="slider-wrapper" id="sliderWrapper"></div>
+  <button class="slider-btn slider-prev" onclick="slideMove(-1)">‹</button>
+  <button class="slider-btn slider-next" onclick="slideMove(1)">›</button>
+  <div class="slider-dots" id="sliderDots"></div>
+</div>
+
+<!-- 상세 레이아웃 -->
+<div class="detail-layout">
+
+  <!-- 좌측: 카페 정보 -->
+  <div class="detail-left" id="cafeInfo">
+    <!-- JS로 채움 -->
+  </div>
+
+  <!-- 우측: 지도 + 액션 버튼 -->
+  <div class="detail-right">
+    <!-- Leaflet 지도 -->
+    <div id="leafletMap" style="height:280px; border-radius:var(--radius-md); overflow:hidden; box-shadow:var(--shadow-sm); margin-bottom:16px;"></div>
+    <div style="margin-bottom:16px; display:flex; gap:8px;">
+      <button class="map-open-btn" style="flex:1; text-align:center; background:#FAE100; color:#3A1D1D;" onclick="openKakaoMap()">🟡 카카오맵</button>
+      <button class="map-open-btn" style="flex:1; text-align:center; background:#03C75A; color:#fff;" onclick="openNaverMap()">🟢 네이버지도</button>
+    </div>
+    <!-- 액션 버튼 -->
+    <div class="action-btns">
+      <button class="action-btn primary" onclick="toggleSave(this)">🤍 저장하기</button>
+      <button class="action-btn outline" onclick="shareKakao()">📤 공유하기</button>
+      <button class="action-btn outline" onclick="scrollToReviews()">💬 리뷰쓰기</button>
+      <button class="action-btn outline" id="instaBtnWrap">📸 인스타그램</button>
+    </div>
+
+    <!-- 운영 상태 -->
+    <div style="margin-top:16px; padding:16px; background:var(--bg-warm); border-radius:var(--radius-sm);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span style="font-weight:700; font-size:.92rem;">운영 시간</span>
+        <span class="open-badge open" id="openStatus">● 영업 중</span>
+      </div>
+      <div style="font-size:.88rem; color:var(--text-sub);" id="hoursInfo">정보 로딩 중...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 리뷰 섹션 -->
+<div class="reviews-section" id="reviewsSection">
+  <h2 style="font-size:1.5rem; font-weight:800; margin-bottom:24px;">💬 방문자 리뷰</h2>
+
+  <!-- 평점 요약 -->
+  <div class="reviews-summary">
+    <div style="text-align:center; min-width:120px;">
+      <div class="big-score" id="bigScore">4.8</div>
+      <div class="score-stars" id="summaryStars">★★★★★</div>
+      <div class="score-count" id="summaryCount">리뷰 로딩 중</div>
+    </div>
+    <div class="score-bars">
+      <div class="score-bar-row">
+        <span class="score-bar-label">5점</span>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:75%"></div></div>
+        <span class="score-bar-num">75%</span>
+      </div>
+      <div class="score-bar-row">
+        <span class="score-bar-label">4점</span>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:18%"></div></div>
+        <span class="score-bar-num">18%</span>
+      </div>
+      <div class="score-bar-row">
+        <span class="score-bar-label">3점</span>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:5%;background:#ccc"></div></div>
+        <span class="score-bar-num">5%</span>
+      </div>
+      <div class="score-bar-row">
+        <span class="score-bar-label">2점</span>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:2%;background:#ccc"></div></div>
+        <span class="score-bar-num">2%</span>
+      </div>
+      <div class="score-bar-row">
+        <span class="score-bar-label">1점</span>
+        <div class="score-bar-track"><div class="score-bar-fill" style="width:0%;background:#ccc"></div></div>
+        <span class="score-bar-num">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 리뷰 목록 -->
+  <div class="review-list" id="reviewList"></div>
+
+  <!-- 리뷰 작성 -->
+  <div class="write-review" id="writeReviewForm">
+    <h3>✍️ 리뷰 작성하기</h3>
+    <div style="font-size:.88rem; color:var(--text-muted); margin-bottom:14px;">방문하셨나요? 솔직한 후기를 남겨주세요!</div>
+    <div class="star-picker" id="starPicker">
+      <span class="star-pick" onclick="setStar(1)">★</span>
+      <span class="star-pick" onclick="setStar(2)">★</span>
+      <span class="star-pick" onclick="setStar(3)">★</span>
+      <span class="star-pick" onclick="setStar(4)">★</span>
+      <span class="star-pick" onclick="setStar(5)">★</span>
+    </div>
+    <textarea class="review-textarea" id="reviewText" placeholder="카페 분위기, 커피 맛, 서비스 등 솔직한 후기를 적어주세요 (최소 10자)"></textarea>
+    <div style="display:flex; align-items:center; justify-content:space-between;">
+      <span style="font-size:.82rem; color:var(--text-muted);" id="charCount">0 / 500자</span>
+      <button class="review-submit" onclick="submitReview()">리뷰 등록</button>
+    </div>
+  </div>
+</div>
+
+<!-- 근처 카페 추천 -->
+<div class="nearby-section">
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:24px;">
+    <div>
+      <div class="section-title">🏃 근처 <span>다른 카페</span></div>
+      <div class="section-sub" id="nearbySub">같은 지역 카페</div>
+    </div>
+    <a href="index.html" class="view-all">더보기 →</a>
+  </div>
+  <div class="card-grid" id="nearbyGrid"></div>
+</div>
+
+<!-- 푸터 -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">☕ 카페인 서울</div>
+      <p class="footer-desc">서울 곳곳의 감성 카페, 작업하기 좋은 카페,<br/>데이트 코스 카페를 한눈에.</p>
+    </div>
+    <div class="footer-col">
+      <h4>서비스</h4>
+      <a href="index.html">카페 찾기</a>
+      <a href="#">지도보기</a>
+      <a href="#">테마별 추천</a>
+    </div>
+    <div class="footer-col">
+      <h4>커뮤니티</h4>
+      <a href="#">카페 리뷰</a>
+      <a href="#">카페 등록 신청</a>
+    </div>
+    <div class="footer-col">
+      <h4>고객지원</h4>
+      <a href="#">FAQ</a>
+      <a href="#">문의하기</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 카페인 서울. All rights reserved.</span>
+  </div>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data.js"></script>
+<script>
+/* ─── 카페 ID 파싱 ──────────────────────── */
+const params = new URLSearchParams(location.search);
+const cafeId = parseInt(params.get('id')) || 1;
+const cafe = CAFES.find(c => c.id === cafeId) || CAFES[0];
+
+/* ─── 슬라이더 ──────────────────────────── */
+let sliderIdx = 0;
+function buildSlider() {
+  const wrapper = document.getElementById('sliderWrapper');
+  const dots = document.getElementById('sliderDots');
+  wrapper.innerHTML = cafe.images.map(src =>
+    `<img class="slider-img" src="${src}" alt="${cafe.name}" />`
+  ).join('');
+  dots.innerHTML = cafe.images.map((_, i) =>
+    `<div class="slider-dot ${i === 0 ? 'active' : ''}" onclick="goSlide(${i})"></div>`
+  ).join('');
+}
+function slideMove(dir) {
+  goSlide((sliderIdx + dir + cafe.images.length) % cafe.images.length);
+}
+function goSlide(i) {
+  sliderIdx = i;
+  document.getElementById('sliderWrapper').style.transform = `translateX(-${i * 100}%)`;
+  document.querySelectorAll('.slider-dot').forEach((d, idx) =>
+    d.classList.toggle('active', idx === i));
+}
+/* 자동 슬라이드 */
+setInterval(() => slideMove(1), 4000);
+
+/* ─── 카페 정보 렌더 ─────────────────────── */
+function renderCafeInfo() {
+  document.title = `${cafe.name} — 카페인 서울`;
+  document.getElementById('bc-name').textContent = cafe.name;
+  document.getElementById('mapAddress').textContent = cafe.address;
+  document.getElementById('hoursInfo').innerHTML =
+    `${cafe.hours}<br/><span style="color:var(--text-muted)">휴무: ${cafe.closed}</span>`;
+  document.getElementById('instaBtnWrap').onclick = () =>
+    window.open(`https://www.instagram.com/${cafe.instagram.replace('@','')}`, '_blank');
+
+  const isOpen = checkOpen();
+  const el = document.getElementById('openStatus');
+  el.className = `open-badge ${isOpen ? 'open' : 'closed'}`;
+  el.textContent = isOpen ? '● 영업 중' : '● 영업 종료';
+
+  const tagsHTML = cafe.tags.map(t => `<span class="detail-tag">#${t}</span>`).join('');
+  const amenities = [
+    { icon: '📍', label: '주소', value: cafe.address },
+    { icon: '📞', label: '전화', value: cafe.phone },
+    { icon: '🕐', label: '영업시간', value: cafe.hours },
+    { icon: '📵', label: '휴무일', value: cafe.closed },
+    { icon: '🚗', label: '주차', value: cafe.parking ? '가능' : '불가' },
+    { icon: '🐾', label: '반려동물', value: cafe.pet ? '동반 가능' : '불가' },
+    { icon: '📶', label: '와이파이', value: cafe.wifi ? '제공' : '미제공' },
+    { icon: '🔌', label: '콘센트', value: cafe.outlet ? '있음' : '없음' },
+  ].map(i => `
+    <div class="info-item">
+      <span class="info-icon">${i.icon}</span>
+      <div><div class="info-label">${i.label}</div><div class="info-value">${i.value}</div></div>
+    </div>`).join('');
+
+  const menuRows = (cafe.menu || []).map(m => `
+    <tr><td>${m.name}</td><td style="text-align:right; font-weight:600;">₩${m.price.toLocaleString()}</td></tr>
+  `).join('');
+
+  document.getElementById('cafeInfo').innerHTML = `
+    <h1 class="detail-name">${cafe.name}</h1>
+    <div class="detail-rating-row">
+      <span class="detail-stars">${'★'.repeat(Math.floor(cafe.rating))}</span>
+      <span class="detail-score">${cafe.rating}</span>
+      <span class="detail-reviews-count">(리뷰 ${cafe.reviewCount}개)</span>
+      <a href="#reviewsSection" class="view-all" style="margin-left:8px; font-size:.82rem;">리뷰 보기 ↓</a>
+    </div>
+    <div class="detail-tags">${tagsHTML}</div>
+    <div class="desc-box">${cafe.desc}</div>
+    <div class="detail-info-grid">${amenities}</div>
+    ${menuRows ? `
+    <h3 style="font-size:1rem; font-weight:800; margin-bottom:12px;">대표 메뉴</h3>
+    <table class="menu-table">
+      <thead><tr><th>메뉴</th><th style="text-align:right">가격</th></tr></thead>
+      <tbody>${menuRows}</tbody>
+    </table>` : ''}
+    <a class="sns-badge" href="https://www.instagram.com/${cafe.instagram.replace('@','')}" target="_blank">
+      📸 인스타그램 ${cafe.instagram}
+    </a>
+  `;
+}
+
+function checkOpen() {
+  const now = new Date();
+  const h = now.getHours();
+  const parts = cafe.hours.split(' - ');
+  if (parts.length < 2) return false;
+  const open = parseInt(parts[0].split(':')[0]);
+  const close = parseInt(parts[1].split(':')[0]);
+  return h >= open && h < close;
+}
+
+/* ─── 리뷰 데이터 ─────────────────────────── */
+const SAMPLE_REVIEWS = [
+  {
+    user: "김민지", initial: "김", color: "#E8A87C",
+    date: "2026.06.08", rating: 5,
+    text: "성수동에서 가장 좋아하는 카페예요! 작업할 때마다 오는데 와이파이도 빠르고 콘센트도 넉넉해서 최고입니다. 커피 맛도 정말 훌륭하고 공간이 넓어서 답답하지 않아요 ☕",
+  },
+  {
+    user: "이준혁", initial: "이", color: "#7C9EE8",
+    date: "2026.06.05", rating: 4,
+    text: "분위기는 정말 좋아요. 주말 오후에 갔는데 조금 기다렸지만 충분히 기다릴 만했습니다. 플랫화이트 강추입니다!",
+  },
+  {
+    user: "박서연", initial: "박", color: "#A87CE8",
+    date: "2026.05.29", rating: 5,
+    text: "프리랜서인데 여기서 거의 매주 작업해요. 4시간 넘게 있어도 눈치 안 주고 콘센트도 많아서 너무 좋아요. 아메리카노도 맛있습니다.",
+  },
+];
+
+function renderReviews() {
+  document.getElementById('bigScore').textContent = cafe.rating;
+  document.getElementById('summaryStars').textContent = '★'.repeat(Math.floor(cafe.rating));
+  document.getElementById('summaryCount').textContent = `${cafe.reviewCount}개 리뷰`;
+
+  const colors = ['#E8A87C','#7C9EE8','#A87CE8','#7CE8A8','#E87CA8'];
+  document.getElementById('reviewList').innerHTML = SAMPLE_REVIEWS.map((r, i) => `
+    <div class="review-item">
+      <div class="review-item-header">
+        <div class="reviewer-info">
+          <div class="avatar" style="background:${r.color}">${r.initial}</div>
+          <div>
+            <div class="review-meta-name">${r.user}</div>
+            <div class="review-meta-date">${r.date}</div>
+          </div>
+        </div>
+        <div class="review-item-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+      </div>
+      <div class="review-item-text">${r.text}</div>
+    </div>`).join('');
+}
+
+/* ─── 별점 선택 ──────────────────────────── */
+let selectedStar = 0;
+function setStar(n) {
+  selectedStar = n;
+  document.querySelectorAll('.star-pick').forEach((s, i) =>
+    s.classList.toggle('active', i < n));
+}
+document.getElementById('reviewText').addEventListener('input', function() {
+  document.getElementById('charCount').textContent = `${this.value.length} / 500자`;
+});
+
+/* ─── 리뷰 제출 ──────────────────────────── */
+function submitReview() {
+  const text = document.getElementById('reviewText').value.trim();
+  if (!selectedStar) { alert('별점을 선택해주세요!'); return; }
+  if (text.length < 10) { alert('리뷰는 최소 10자 이상 작성해주세요.'); return; }
+
+  const today = new Date().toLocaleDateString('ko-KR').replace(/\. /g,'.').replace(/\.$/,'');
+  const newReview = document.createElement('div');
+  newReview.className = 'review-item';
+  newReview.style.animation = 'fadeIn .4s ease';
+  newReview.innerHTML = `
+    <div class="review-item-header">
+      <div class="reviewer-info">
+        <div class="avatar" style="background:#6B4226">나</div>
+        <div><div class="review-meta-name">나 (방금 작성)</div><div class="review-meta-date">${today}</div></div>
+      </div>
+      <div class="review-item-stars">${'★'.repeat(selectedStar)}${'☆'.repeat(5-selectedStar)}</div>
+    </div>
+    <div class="review-item-text">${text}</div>`;
+
+  document.getElementById('reviewList').prepend(newReview);
+  document.getElementById('reviewText').value = '';
+  document.getElementById('charCount').textContent = '0 / 500자';
+  selectedStar = 0;
+  document.querySelectorAll('.star-pick').forEach(s => s.classList.remove('active'));
+  alert('리뷰가 등록되었습니다! 감사합니다 ☕');
+}
+
+/* ─── 근처 카페 ──────────────────────────── */
+function renderNearby() {
+  const nearby = CAFES
+    .filter(c => c.id !== cafe.id && c.district === cafe.district)
+    .concat(CAFES.filter(c => c.id !== cafe.id && c.district !== cafe.district))
+    .slice(0, 4);
+  document.getElementById('nearbySub').textContent = `${cafe.district} 근처 카페 추천`;
+  document.getElementById('nearbyGrid').innerHTML = nearby.map(c => {
+    const tags = c.tags.slice(0,2).map(t => `<span class="tag-pill">#${t}</span>`).join('');
+    return `
+      <div class="cafe-card" onclick="location.href='cafe-detail.html?id=${c.id}'">
+        <div class="card-img">
+          <img src="${c.images[0]}" alt="${c.name}" loading="lazy"/>
+          ${c.badge ? `<div class="card-badge ${c.badge}">${c.badge==='hot'?'🔥 HOT':'🆕 NEW'}</div>` : ''}
+        </div>
+        <div class="card-body">
+          <div class="card-tags">${tags}</div>
+          <div class="card-name">${c.name}</div>
+          <div class="card-location">📍 ${c.district} · ${c.station}역</div>
+          <div class="card-meta">
+            <div class="card-rating">
+              <span class="stars">★</span>${c.rating}
+              <span class="card-review-count">(${c.reviewCount})</span>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+/* ─── 유틸 ───────────────────────────────── */
+/* ─── Leaflet 지도 초기화 ─── */
+function initMap() {
+  const lat = cafe.lat || 37.5665;
+  const lng = cafe.lng || 126.9780;
+
+  const map = L.map('leafletMap', { zoomControl: true, scrollWheelZoom: false })
+    .setView([lat, lng], 16);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19,
+  }).addTo(map);
+
+  const icon = L.divIcon({
+    html: `<div style="
+      background:var(--primary,#6B4226); color:#fff;
+      padding:6px 12px; border-radius:20px;
+      font-size:12px; font-weight:700; white-space:nowrap;
+      box-shadow:0 3px 10px rgba(0,0,0,.25);
+      display:flex; align-items:center; gap:4px;">
+      ☕ ${cafe.name}
+    </div>`,
+    className: '',
+    iconAnchor: [60, 18],
+  });
+
+  L.marker([lat, lng], { icon })
+    .addTo(map)
+    .bindPopup(`<b>${cafe.name}</b><br/>${cafe.address}`)
+    .openPopup();
+}
+
+function openNaverMap() {
+  const q = encodeURIComponent(cafe.address);
+  window.open(`https://map.naver.com/v5/search/${q}`, '_blank');
+}
+
+function openKakaoMap() {
+  const q = encodeURIComponent(cafe.address);
+  window.open(`https://map.kakao.com/?q=${q}`, '_blank');
+}
+function toggleSave(btn) {
+  btn.textContent = btn.textContent.includes('🤍') ? '❤️ 저장됨' : '🤍 저장하기';
+  btn.style.background = btn.textContent.includes('❤️') ? '#D94C3D' : 'var(--primary)';
+}
+function shareKakao() { alert('카카오톡 공유 기능 — SDK 연동 시 사용 가능합니다.'); }
+function scrollToReviews() {
+  document.getElementById('writeReviewForm').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ─── Init ───────────────────────────────── */
+buildSlider();
+renderCafeInfo();
+renderReviews();
+renderNearby();
+// 페이지 완전 로드 후 지도 초기화
+window.addEventListener('load', initMap);
+</script>
+</body>
+</html>

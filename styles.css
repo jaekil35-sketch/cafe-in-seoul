@@ -201,6 +201,28 @@ input, textarea { font: inherit; }
   font-size: 1rem; transition: all .2s;
 }
 .card-save:hover { background: #fff; transform: scale(1.1); }
+/* ── 카드 이미지 위 지도 버튼 (전체 페이지 공통) ── */
+.card-map-btns {
+  position: absolute; bottom: 8px; left: 8px;
+  display: flex; gap: 6px;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .22s, transform .22s;
+  pointer-events: none;
+}
+.cafe-card:hover .card-map-btns {
+  opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+.card-map-btn {
+  padding: 5px 10px; border-radius: 20px; border: none;
+  font-size: .75rem; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; gap: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  transition: opacity .15s;
+  white-space: nowrap;
+}
+.card-map-btn:hover { opacity: .88; }
+.card-map-btn.kakao { background: #FAE100; color: #3A1D1D; }
+.card-map-btn.naver { background: #03C75A; color: #fff; }
 .card-body { padding: 16px; }
 .card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
 .tag-pill {

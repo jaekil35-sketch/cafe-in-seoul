@@ -257,6 +257,10 @@ function cafeCardHTML(cafe) {
         <img src="${cafe.images[0]}" alt="${cafe.name}" loading="lazy" />
         ${badgeHTML}
         <button class="card-save" title="저장" onclick="event.stopPropagation(); this.textContent = this.textContent==='🤍'?'❤️':'🤍'">🤍</button>
+        <div class="card-map-btns">
+          <button class="card-map-btn kakao" onclick="event.stopPropagation();window.open('https://map.kakao.com/?q='+encodeURIComponent('${cafe.address}'),'_blank')">🟡 카카오맵</button>
+          <button class="card-map-btn naver" onclick="event.stopPropagation();window.open('https://map.naver.com/v5/search/'+encodeURIComponent('${cafe.address}'),'_blank')">🟢 네이버</button>
+        </div>
       </div>
       <div class="card-body">
         <div class="card-tags">${tagsHTML}</div>

@@ -426,6 +426,11 @@ function renderNearby() {
         <div class="card-img">
           <img src="${c.images[0]}" alt="${c.name}" loading="lazy"/>
           ${c.badge ? `<div class="card-badge ${c.badge}">${c.badge==='hot'?'🔥 HOT':'🆕 NEW'}</div>` : ''}
+          <button class="card-save" onclick="event.stopPropagation();this.textContent=this.textContent==='🤍'?'❤️':'🤍'">🤍</button>
+          <div class="card-map-btns">
+            <button class="card-map-btn kakao" onclick="event.stopPropagation();window.open('https://map.kakao.com/?q='+encodeURIComponent('${c.address}'),'_blank')">🟡 카카오맵</button>
+            <button class="card-map-btn naver" onclick="event.stopPropagation();window.open('https://map.naver.com/v5/search/'+encodeURIComponent('${c.address}'),'_blank')">🟢 네이버</button>
+          </div>
         </div>
         <div class="card-body">
           <div class="card-tags">${tags}</div>

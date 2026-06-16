@@ -63,6 +63,28 @@
     }
     .filter-reset:hover { border-color: var(--primary); color: var(--primary); }
 
+    /* ─── 카드 이미지 위 지도 버튼 ─── */
+    .card-map-btns {
+      position: absolute; bottom: 8px; left: 8px;
+      display: flex; gap: 6px;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity .22s, transform .22s;
+      pointer-events: none;
+    }
+    .cafe-card:hover .card-map-btns {
+      opacity: 1; transform: translateY(0); pointer-events: auto;
+    }
+    .card-map-btn {
+      padding: 5px 10px; border-radius: 20px; border: none;
+      font-size: .75rem; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+      transition: opacity .15s;
+    }
+    .card-map-btn:hover { opacity: .88; }
+    .card-map-btn.kakao { background: #FAE100; color: #3A1D1D; }
+    .card-map-btn.naver { background: #03C75A; color: #fff; }
+
     /* ─── 우측 결과 ─── */
     .result-header {
       display: flex; align-items: center; justify-content: space-between;
@@ -287,6 +309,10 @@ function cafeCardHTML(cafe) {
         <img src="${cafe.images[0]}" alt="${cafe.name}" loading="lazy"/>
         ${cafe.badge ? `<div class="card-badge ${cafe.badge}">${cafe.badge==='hot'?'🔥 HOT':'🆕 NEW'}</div>` : ''}
         <button class="card-save" onclick="event.stopPropagation();this.textContent=this.textContent==='🤍'?'❤️':'🤍'">🤍</button>
+        <div class="card-map-btns">
+          <button class="card-map-btn kakao" onclick="event.stopPropagation();window.open('https://map.kakao.com/?q='+encodeURIComponent('${cafe.address}'),'_blank')">🟡 카카오맵</button>
+          <button class="card-map-btn naver" onclick="event.stopPropagation();window.open('https://map.naver.com/v5/search/'+encodeURIComponent('${cafe.address}'),'_blank')">🟢 네이버</button>
+        </div>
       </div>
       <div class="card-body">
         <div class="card-tags">${cafe.tags.slice(0,2).map(t=>`<span class="tag-pill">#${t}</span>`).join('')}</div>

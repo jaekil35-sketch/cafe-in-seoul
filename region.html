@@ -182,10 +182,14 @@
       <div class="filter-group">
         <div class="filter-group-label">최소 평점</div>
         <div class="rating-range">
-          <div class="rating-opt active" onclick="setMinRating(0,this)"><span class="stars">★★★★★</span> 전체</div>
+          <div class="rating-opt active" onclick="setMinRating(0,this)">전체 <span style="color:var(--text-muted);font-size:.8rem;">(0점 이상)</span></div>
+          <div class="rating-opt" onclick="setMinRating(5,this)"><span class="stars">★★★★★</span> 5.0</div>
           <div class="rating-opt" onclick="setMinRating(4.5,this)"><span class="stars">★★★★★</span> 4.5 이상</div>
           <div class="rating-opt" onclick="setMinRating(4.0,this)"><span class="stars">★★★★☆</span> 4.0 이상</div>
-          <div class="rating-opt" onclick="setMinRating(3.5,this)"><span class="stars">★★★½☆</span> 3.5 이상</div>
+          <div class="rating-opt" onclick="setMinRating(3.5,this)"><span class="stars">★★★☆☆</span> 3.5 이상</div>
+          <div class="rating-opt" onclick="setMinRating(3.0,this)"><span class="stars">★★★☆☆</span> 3.0 이상</div>
+          <div class="rating-opt" onclick="setMinRating(2.0,this)"><span class="stars">★★☆☆☆</span> 2.0 이상</div>
+          <div class="rating-opt" onclick="setMinRating(1.0,this)"><span class="stars">★☆☆☆☆</span> 1.0 이상</div>
         </div>
       </div>
 
@@ -195,25 +199,8 @@
 
   <!-- 우측 결과 -->
   <div>
-    <!-- 지역 탭 -->
-    <div class="district-tabs" id="districtTabs">
-      <div class="district-tab active" onclick="setDistrict('전체',this)">전체</div>
-      <div class="district-tab" onclick="setDistrict('성수동',this)">성수동</div>
-      <div class="district-tab" onclick="setDistrict('연남동',this)">연남동</div>
-      <div class="district-tab" onclick="setDistrict('홍대',this)">홍대</div>
-      <div class="district-tab" onclick="setDistrict('한남동',this)">한남동</div>
-      <div class="district-tab" onclick="setDistrict('북촌',this)">북촌</div>
-      <div class="district-tab" onclick="setDistrict('서촌',this)">서촌</div>
-      <div class="district-tab" onclick="setDistrict('청담동',this)">청담동</div>
-      <div class="district-tab" onclick="setDistrict('이태원',this)">이태원</div>
-      <div class="district-tab" onclick="setDistrict('강남',this)">강남</div>
-      <div class="district-tab" onclick="setDistrict('종로',this)">종로</div>
-      <div class="district-tab" onclick="setDistrict('망원동',this)">망원동</div>
-      <div class="district-tab" onclick="setDistrict('합정',this)">합정</div>
-      <div class="district-tab" onclick="setDistrict('잠실',this)">잠실</div>
-      <div class="district-tab" onclick="setDistrict('을지로',this)">을지로</div>
-      <div class="district-tab" onclick="setDistrict('신촌',this)">신촌</div>
-    </div>
+    <!-- 지역 탭 (카운트는 JS가 자동 주입) -->
+    <div class="district-tabs" id="districtTabs"></div>
 
     <!-- 활성 필터 표시 -->
     <div class="active-filters" id="activeFilterBadges"></div>
@@ -256,6 +243,21 @@ let sortBy = 'rating';
 const PAGE_SIZE = 9;
 let visibleCount = PAGE_SIZE;
 let filteredList = [];
+
+// ── 지역 탭 동적 생성 (카운트 자동 계산) ──
+const DISTRICTS = ['전체','성수동','연남동','홍대','한남동','북촌','서촌','청담동','이태원','강남','종로','망원동','합정','잠실','을지로','신촌'];
+
+function buildDistrictTabs() {
+  const container = document.getElementById('districtTabs');
+  container.innerHTML = DISTRICTS.map((d, i) => {
+    const count = d === '전체'
+      ? CAFES.length
+      : CAFES.filter(c => c.district.includes(d) || c.address.includes(d)).length;
+    return `<div class="district-tab${i===0?' active':''}" onclick="setDistrict('${d}',this)">
+      ${d} <span style="font-size:.78rem;opacity:.7;">${count}</span>
+    </div>`;
+  }).join('');
+}
 
 function getFiltered() {
   const checkedFilters = [...document.querySelectorAll('[data-filter]:checked')].map(el => el.dataset.filter);
@@ -377,6 +379,7 @@ function resetFilters() {
   applyFilters();
 }
 
+buildDistrictTabs();
 applyFilters();
 </script>
 </body>
